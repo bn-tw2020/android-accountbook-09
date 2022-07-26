@@ -9,18 +9,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.Trash: ImageVector
     get() {
         if (_trash != null) {
             return _trash!!
         }
-        _trash = Builder(name = "Trash", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFE75B3F)),
-                    strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
-                    StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero) {
+        _trash = Builder(
+            name = "Trash", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFE75B3F)),
+                strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
+                StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero
+            ) {
                 moveTo(4.0f, 5.1428f)
                 horizontalLineTo(20.0f)
                 moveTo(9.7143f, 8.5714f)
@@ -48,7 +51,7 @@ public val IconPack.Trash: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _trash!!
     }
 

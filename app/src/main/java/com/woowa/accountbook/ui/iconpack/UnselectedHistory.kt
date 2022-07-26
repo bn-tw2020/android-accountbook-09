@@ -9,19 +9,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.UnselectedHistory: ImageVector
     get() {
         if (_unselectedHistory != null) {
             return _unselectedHistory!!
         }
-        _unselectedHistory = Builder(name = "UnselectedHistory", defaultWidth = 24.0.dp,
-                defaultHeight = 24.0.dp, viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
-                    strokeAlpha = 0.5f, strokeLineWidth = 1.0f, strokeLineCap = Round,
-                    strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+        _unselectedHistory = Builder(
+            name = "UnselectedHistory", defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp, viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
+                strokeAlpha = 0.5f, strokeLineWidth = 1.0f, strokeLineCap = Round,
+                strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(10.5321f, 8.2257f)
                 horizontalLineTo(17.0643f)
                 moveTo(6.6129f, 8.2257f)
@@ -51,7 +54,7 @@ public val IconPack.UnselectedHistory: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _unselectedHistory!!
     }
 

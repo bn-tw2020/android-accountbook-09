@@ -9,18 +9,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.Uncheckbox: ImageVector
     get() {
         if (_uncheckbox != null) {
             return _uncheckbox!!
         }
-        _uncheckbox = Builder(name = "Uncheckbox", defaultWidth = 22.0.dp, defaultHeight = 22.0.dp,
-                viewportWidth = 22.0f, viewportHeight = 22.0f).apply {
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF524D90)),
-                    strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
-                    StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = EvenOdd) {
+        _uncheckbox = Builder(
+            name = "Uncheckbox", defaultWidth = 22.0.dp, defaultHeight = 22.0.dp,
+            viewportWidth = 22.0f, viewportHeight = 22.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF524D90)),
+                strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
+                StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = EvenOdd
+            ) {
                 moveTo(3.653f, 0.7143f)
                 horizontalLineTo(18.3469f)
                 curveTo(19.1263f, 0.7143f, 19.8738f, 1.0239f, 20.425f, 1.575f)
@@ -38,7 +41,7 @@ public val IconPack.Uncheckbox: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _uncheckbox!!
     }
 

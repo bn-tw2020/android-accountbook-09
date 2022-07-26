@@ -12,18 +12,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.Checkbox: ImageVector
     get() {
         if (_checkbox != null) {
             return _checkbox!!
         }
-        _checkbox = Builder(name = "Checkbox", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0xFFE75B3F)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = EvenOdd) {
+        _checkbox = Builder(
+            name = "Checkbox", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0xFFE75B3F)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = EvenOdd
+            ) {
                 moveTo(4.653f, 1.7143f)
                 horizontalLineTo(19.3469f)
                 curveTo(20.1263f, 1.7143f, 20.8738f, 2.0239f, 21.425f, 2.575f)
@@ -39,15 +42,17 @@ public val IconPack.Checkbox: ImageVector
                 curveTo(3.1261f, 2.0239f, 3.8736f, 1.7143f, 4.653f, 1.7143f)
                 close()
             }
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
-                    strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
-                    StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
+                strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
+                StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero
+            ) {
                 moveTo(7.5918f, 12.0f)
                 lineTo(10.5306f, 14.9388f)
                 lineTo(16.4082f, 9.0612f)
             }
         }
-        .build()
+            .build()
         return _checkbox!!
     }
 
