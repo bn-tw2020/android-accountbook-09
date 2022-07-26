@@ -1,10 +1,8 @@
 package com.woowa.accountbook.ui.iconpack
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round
 import androidx.compose.ui.graphics.StrokeJoin
@@ -13,18 +11,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.Calendar: ImageVector
     get() {
         if (_calendar != null) {
             return _calendar!!
         }
-        _calendar = Builder(name = "Calendar", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
-                    strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
-                    StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero) {
+        _calendar = Builder(
+            name = "Calendar", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
+                strokeLineWidth = 1.0f, strokeLineCap = Round, strokeLineJoin =
+                StrokeJoin.Companion.Round, strokeLineMiter = 4.0f, pathFillType = NonZero
+            ) {
                 moveTo(2.8572f, 7.4286f)
                 horizontalLineTo(21.1429f)
                 moveTo(5.1429f, 2.8572f)
@@ -43,9 +44,11 @@ public val IconPack.Calendar: ImageVector
                 verticalLineTo(2.8572f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(12.0f, 13.1429f)
                 curveTo(12.6312f, 13.1429f, 13.1429f, 12.6312f, 13.1429f, 12.0f)
                 curveTo(13.1429f, 11.3688f, 12.6312f, 10.8571f, 12.0f, 10.8571f)
@@ -53,9 +56,11 @@ public val IconPack.Calendar: ImageVector
                 curveTo(10.8571f, 12.6312f, 11.3688f, 13.1429f, 12.0f, 13.1429f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(7.4286f, 13.1429f)
                 curveTo(8.0598f, 13.1429f, 8.5714f, 12.6312f, 8.5714f, 12.0f)
                 curveTo(8.5714f, 11.3688f, 8.0598f, 10.8571f, 7.4286f, 10.8571f)
@@ -63,9 +68,11 @@ public val IconPack.Calendar: ImageVector
                 curveTo(6.2857f, 12.6312f, 6.7974f, 13.1429f, 7.4286f, 13.1429f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(16.5714f, 13.1429f)
                 curveTo(17.2026f, 13.1429f, 17.7143f, 12.6312f, 17.7143f, 12.0f)
                 curveTo(17.7143f, 11.3688f, 17.2026f, 10.8571f, 16.5714f, 10.8571f)
@@ -73,9 +80,11 @@ public val IconPack.Calendar: ImageVector
                 curveTo(15.4286f, 12.6312f, 15.9402f, 13.1429f, 16.5714f, 13.1429f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(12.0f, 17.7143f)
                 curveTo(12.6312f, 17.7143f, 13.1429f, 17.2026f, 13.1429f, 16.5714f)
                 curveTo(13.1429f, 15.9403f, 12.6312f, 15.4286f, 12.0f, 15.4286f)
@@ -83,9 +92,11 @@ public val IconPack.Calendar: ImageVector
                 curveTo(10.8571f, 17.2026f, 11.3688f, 17.7143f, 12.0f, 17.7143f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(7.4286f, 17.7143f)
                 curveTo(8.0598f, 17.7143f, 8.5714f, 17.2026f, 8.5714f, 16.5714f)
                 curveTo(8.5714f, 15.9403f, 8.0598f, 15.4286f, 7.4286f, 15.4286f)
@@ -93,9 +104,11 @@ public val IconPack.Calendar: ImageVector
                 curveTo(6.2857f, 17.2026f, 6.7974f, 17.7143f, 7.4286f, 17.7143f)
                 close()
             }
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(16.5714f, 17.7143f)
                 curveTo(17.2026f, 17.7143f, 17.7143f, 17.2026f, 17.7143f, 16.5714f)
                 curveTo(17.7143f, 15.9403f, 17.2026f, 15.4286f, 16.5714f, 15.4286f)
@@ -104,7 +117,7 @@ public val IconPack.Calendar: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _calendar!!
     }
 

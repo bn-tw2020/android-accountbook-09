@@ -9,18 +9,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.Plus: ImageVector
     get() {
         if (_plus != null) {
             return _plus!!
         }
-        _plus = Builder(name = "Plus", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
-                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
-                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
-                    pathFillType = EvenOdd) {
+        _plus = Builder(
+            name = "Plus", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
+            viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0xFFffffff)), stroke = null, strokeLineWidth = 0.0f,
+                strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                pathFillType = EvenOdd
+            ) {
                 moveTo(19.0f, 13.0f)
                 horizontalLineTo(13.0f)
                 verticalLineTo(19.0f)
@@ -37,7 +40,7 @@ public val IconPack.Plus: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _plus!!
     }
 

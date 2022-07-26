@@ -4,26 +4,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.EvenOdd
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeCap.Companion.Round
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.IconPack
 
 public val IconPack.UnselectedSetting: ImageVector
     get() {
         if (_unselectedSetting != null) {
             return _unselectedSetting!!
         }
-        _unselectedSetting = Builder(name = "UnselectedSetting", defaultWidth = 24.0.dp,
-                defaultHeight = 24.0.dp, viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
-                    strokeAlpha = 0.5f, strokeLineWidth = 0.933f, strokeLineCap = Round,
-                    strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
-                    pathFillType = EvenOdd) {
+        _unselectedSetting = Builder(
+            name = "UnselectedSetting", defaultWidth = 24.0.dp,
+            defaultHeight = 24.0.dp, viewportWidth = 24.0f, viewportHeight = 24.0f
+        ).apply {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
+                strokeAlpha = 0.5f, strokeLineWidth = 0.933f, strokeLineCap = Round,
+                strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
+                pathFillType = EvenOdd
+            ) {
                 moveTo(12.0001f, 4.0f)
                 curveTo(12.4012f, 4.0f, 12.7966f, 4.0297f, 13.1818f, 4.0869f)
                 lineTo(13.7623f, 5.8457f)
@@ -61,10 +63,12 @@ public val IconPack.UnselectedSetting: ImageVector
                 verticalLineTo(4.0f)
                 close()
             }
-            path(fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
-                    strokeAlpha = 0.5f, strokeLineWidth = 1.0f, strokeLineCap = Round,
-                    strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
-                    pathFillType = NonZero) {
+            path(
+                fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFFffffff)),
+                strokeAlpha = 0.5f, strokeLineWidth = 1.0f, strokeLineCap = Round,
+                strokeLineJoin = StrokeJoin.Companion.Round, strokeLineMiter = 4.0f,
+                pathFillType = NonZero
+            ) {
                 moveTo(12.0001f, 15.4286f)
                 curveTo(13.8937f, 15.4286f, 15.4287f, 13.8935f, 15.4287f, 12.0f)
                 curveTo(15.4287f, 10.1064f, 13.8937f, 8.5714f, 12.0001f, 8.5714f)
@@ -73,7 +77,7 @@ public val IconPack.UnselectedSetting: ImageVector
                 close()
             }
         }
-        .build()
+            .build()
         return _unselectedSetting!!
     }
 
