@@ -8,21 +8,91 @@ import androidx.compose.ui.unit.sp
 
 // Set of Material typography styles to start with
 val Typography = Typography(
+    h1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 96.sp,
+        fontWeight = FontWeight.Light,
+        lineHeight = 117.sp,
+        letterSpacing = (-1.5).sp
+    ),
+    h2 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 60.sp,
+        fontWeight = FontWeight.Light,
+        lineHeight = 73.sp,
+        letterSpacing = (-0.5).sp
+    ),
+    h3 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 48.sp,
+        fontWeight = FontWeight.Normal,
+        lineHeight = 59.sp
+    ),
+    h4 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 30.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 37.sp
+    ),
+    h5 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 24.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 29.sp
+    ),
+    h6 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 24.sp
+    ),
+    subtitle1 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold,
+        lineHeight = 24.sp,
+        letterSpacing = 0.15.sp
+    ),
+    subtitle2 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.W700,
+        lineHeight = 16.sp,
+        letterSpacing = 0.1.sp
+    ),
     body1 = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    )
-    /* Other default text styles to override
+        fontSize = 16.sp,
+        fontWeight = FontWeight.W500,
+        lineHeight = 18.sp,
+        letterSpacing = 0.15.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.W700,
+        lineHeight = 16.sp,
+        letterSpacing = 0.25.sp
+    ),
     button = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
+        fontSize = 14.sp,
+        fontWeight = FontWeight.W700,
+        lineHeight = 18.sp,
+        letterSpacing = 1.25.sp
     ),
     caption = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 12.sp
+        fontSize = 10.sp,
+        fontWeight = FontWeight.W700,
+        lineHeight = 12.sp,
+        letterSpacing = 0.4.sp
+    ),
+    overline = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.W500,
+        lineHeight = 14.sp,
+        letterSpacing = 1.sp
     )
-    */
 )
