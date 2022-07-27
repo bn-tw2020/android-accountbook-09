@@ -9,8 +9,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.woowa.accountbook.ui.calendar.component.CalendarScreen
+import com.woowa.accountbook.ui.component.AccountBookFloatingButton
 import com.woowa.accountbook.ui.history.component.HistoryScreen
 import com.woowa.accountbook.ui.history.component.RegistrationScreen
+import com.woowa.accountbook.ui.iconpack.IconPack
+import com.woowa.accountbook.ui.iconpack.Plus
 import com.woowa.accountbook.ui.settings.component.SettingScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsDetailScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsScreen
@@ -29,6 +32,14 @@ fun AccountBookApp() {
                         tabs = appState.bottomBarTabs,
                         currentRoute = appState.currentRoute ?: HomeSections.HISTORY.route,
                         navigateToRoute = { route -> appState.navigateToBottomBarRoute(route) }
+                    )
+                }
+            },
+            floatingActionButton = {
+                if (appState.shouldShowFloatingActionButton) {
+                    AccountBookFloatingButton(
+                        icon = IconPack.Plus,
+                        onClicked = { appState.navigateToRegistration(Destinations.REGISTRATION) }
                     )
                 }
             },
@@ -53,11 +64,11 @@ fun AccountBookBottomBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
 ) {
-    val currentSection = tabs.first { it.route == currentRoute }
+    val currentSection = tabs.firstOrNull { it.route == currentRoute }
 
     BottomNavigation {
         tabs.forEach { section ->
-            val selected = section == currentSection
+            val selected = section == currentSection || selectNavigation(currentRoute, section)
             BottomNavigationItem(
                 icon = {
                     Icon(imageVector = section.icon, contentDescription = section.name)
@@ -72,6 +83,13 @@ fun AccountBookBottomBar(
                 selected = selected,
             )
         }
+    }
+}
+
+fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
+    return when (section.route) {
+        HomeSections.HISTORY.route -> currentRoute.contains(HomeSections.HISTORY.route)
+        else -> false
     }
 }
 
