@@ -24,9 +24,9 @@ enum class HomeSections(
 }
 
 object Destinations {
-    const val REGISTRATION = "registration"
+    const val REGISTRATION = "home/history/registration"
     const val HOME = "home"
-    const val STATISTICS_DETAIL = "detail"
+    const val STATISTICS_DETAIL = "home/statistics/detail"
 }
 
 @Composable
@@ -43,10 +43,15 @@ class AccountBookState(
 ) {
     val bottomBarTabs = HomeSections.values()
     private val bottomBarRoutes = bottomBarTabs.map { it.route }
+        .plus(listOf(Destinations.REGISTRATION, Destinations.STATISTICS_DETAIL))
 
     val shouldShowBottomBar: Boolean
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination?.route in bottomBarRoutes
+
+
+    val shouldShowFloatingActionButton: Boolean
+        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route == HomeSections.HISTORY.route
 
     val currentRoute: String?
         get() = navController.currentDestination?.route
@@ -61,6 +66,12 @@ class AccountBookState(
                 launchSingleTop = true
                 restoreState = true
             }
+        }
+    }
+
+    fun navigateToRegistration(route: String) {
+        if (route != currentRoute) {
+            navController.navigate(route)
         }
     }
 }
