@@ -1,4 +1,4 @@
-package com.woowa.accountbook.ui.calendar.component
+package com.woowa.accountbook.ui.history.component
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
