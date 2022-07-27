@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import com.woowa.accountbook.ui.calendar.component.CalendarScreen
-import com.woowa.accountbook.ui.calendar.component.HistoryScreen
+import com.woowa.accountbook.ui.history.component.HistoryScreen
 import com.woowa.accountbook.ui.history.component.RegistrationScreen
 import com.woowa.accountbook.ui.settings.component.SettingScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsDetailScreen
