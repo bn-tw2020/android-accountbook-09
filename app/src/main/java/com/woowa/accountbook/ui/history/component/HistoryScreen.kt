@@ -16,29 +16,64 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.woowa.accountbook.common.rawToMoneyFormat
 import com.woowa.accountbook.data.entitiy.History
-import com.woowa.accountbook.ui.component.AccountBookAppBar
-import com.woowa.accountbook.ui.component.LabelText
-import com.woowa.accountbook.ui.component.LeftCornerCheckButton
-import com.woowa.accountbook.ui.component.RightCornerCheckButton
+import com.woowa.accountbook.ui.calendar.CalendarViewModel
+import com.woowa.accountbook.ui.component.*
 import com.woowa.accountbook.ui.history.HistoryViewModel
 import com.woowa.accountbook.ui.iconpack.IconPack
 import com.woowa.accountbook.ui.iconpack.LeftArrow
 import com.woowa.accountbook.ui.iconpack.RightArrow
 import com.woowa.accountbook.ui.theme.*
-import com.woowa.accountbook.ui.util.rawToMoneyFormat
 
 @Composable
-fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
+fun HistoryScreen(
+    historyViewModel: HistoryViewModel = hiltViewModel(),
+    calendarViewModel: CalendarViewModel = hiltViewModel()
+) {
+    val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
+    val (year, month) = calendarViewModel.yearMonthPair.value
+    historyViewModel.getHistory(month)
+    val inComeIsChecked = remember { mutableStateOf(true) }
+    val expenseIsChecked = remember { mutableStateOf(true) }
+
     Scaffold(
         backgroundColor = OffWhite,
         topBar = {
             AccountBookAppBar(
-                title = "2022년 7월",
+                title = yearAndMonth,
                 navigationIcon = IconPack.LeftArrow,
-                onNavigationClicked = {},
+                onNavigationClicked = {
+                    calendarViewModel.previousYearAndMonth()
+                    inComeIsChecked.value = true
+                    expenseIsChecked.value = true
+                },
                 actionIcon = IconPack.RightArrow,
-                onActionClicked = {}
+                onActionClicked = {
+                    calendarViewModel.nextYearAndMonth()
+                    inComeIsChecked.value = true
+                    expenseIsChecked.value = true
+                },
+                dialog = { isShow, onDismissRequest ->
+                    AccountBookDialog(
+                        isShow = isShow,
+                        onDismissRequest = { onDismissRequest(it) },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        content = {
+                            YearAndMonthPicker(
+                                year,
+                                month,
+                                onClicked = { year, month ->
+                                    onDismissRequest(it)
+                                    calendarViewModel.setYearAndMonth(year, month)
+                                    inComeIsChecked.value = true
+                                    expenseIsChecked.value = true
+                                }
+                            )
+                        }
+                    )
+                }
             )
         }
     ) {
@@ -46,8 +81,6 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
         val groupHistory = histories.groupBy { it.day }
         val monthTotalIncome = histories.filter { it.category.isIncome == 1 }.sumOf { it.money }
         val monthTotalExpense = histories.filter { it.category.isIncome == 0 }.sumOf { it.money }
-        val inComeIsChecked = remember { mutableStateOf(true) }
-        val expenseIsChecked = remember { mutableStateOf(true) }
 
         Column(modifier = Modifier.fillMaxSize()) {
             HistoryFilterButton(
@@ -61,7 +94,7 @@ fun HistoryScreen(historyViewModel: HistoryViewModel = hiltViewModel()) {
                 onExpenseButtonClicked = { expenseIsChecked.value = !expenseIsChecked.value },
                 onIncomeClicked = { historyViewModel.getIncomeHistory() },
                 onExpenseClicked = { historyViewModel.getExpenseHistory() },
-                onBothClicked = { historyViewModel.getHistory(7) },
+                onBothClicked = { historyViewModel.getHistory(month) },
                 onEmptyClicked = { historyViewModel.getEmptyHistory() }
             )
             if (groupHistory.isEmpty() || (!inComeIsChecked.value && !expenseIsChecked.value)) {

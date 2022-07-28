@@ -1,12 +1,13 @@
 package com.woowa.accountbook.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,8 +29,10 @@ fun AccountBookAppBar(
     actionIcon: ImageVector?,
     onActionClicked: () -> Unit,
     backgroundColor: Color = OffWhite,
-    contentColor: Color = Purple
+    contentColor: Color = Purple,
+    dialog: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> }
 ) {
+    var isShowDialog by remember { mutableStateOf(false) }
     TopAppBar(
         backgroundColor = backgroundColor,
         contentColor = contentColor,
@@ -42,7 +45,8 @@ fun AccountBookAppBar(
                             .padding(end = 72.dp - 4.dp)
                     }
                     else -> Modifier.fillMaxWidth()
-                },
+                }
+                    .clickable { isShowDialog = !isShowDialog },
                 textAlign = TextAlign.Center,
                 style = Typography.subtitle1,
                 maxLines = 1,
@@ -68,6 +72,7 @@ fun AccountBookAppBar(
             }
         }
     )
+    dialog(isShowDialog) { isShowDialog = !it }
 }
 
 @Preview(showBackground = true)
@@ -78,7 +83,8 @@ fun AccountBookAppBarPreview() {
         navigationIcon = IconPack.LeftArrow,
         onNavigationClicked = {},
         actionIcon = IconPack.RightArrow,
-        onActionClicked = {}
+        onActionClicked = {},
+        dialog = { _, _ -> }
     )
 }
 
@@ -90,7 +96,8 @@ fun AccountBookRegistrationAppBar() {
         navigationIcon = IconPack.LeftArrow,
         onNavigationClicked = {},
         actionIcon = null,
-        onActionClicked = {}
+        onActionClicked = {},
+        dialog = { _, _ -> }
     )
 }
 
@@ -102,6 +109,7 @@ fun AccountBookSettingAppBar() {
         navigationIcon = null,
         onNavigationClicked = {},
         actionIcon = null,
-        onActionClicked = {}
+        onActionClicked = {},
+        dialog = { _, _ -> }
     )
 }
