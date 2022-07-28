@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoryViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    private val totalHistory = MutableStateFlow<List<History>>(emptyList())
+    val totalHistory = MutableStateFlow<List<History>>(emptyList())
     private val _history = MutableStateFlow<List<History>>(emptyList())
     val history: StateFlow<List<History>> get() = _history
 
@@ -23,7 +23,6 @@ class HistoryViewModel @Inject constructor(private val repository: Repository) :
 
     fun getIncomeHistory() {
         val incomeHistory = totalHistory.value.filter { it.category.isIncome == 1 }
-
         _history.value = incomeHistory
     }
 
@@ -34,5 +33,17 @@ class HistoryViewModel @Inject constructor(private val repository: Repository) :
 
     fun getEmptyHistory() {
         _history.value = emptyList()
+    }
+
+    fun resetCheckedHistory() {
+        _history.value = _history.value.map {
+            it.copy(isChecked = false)
+        }
+    }
+
+    fun setCheckedItem(isChecked: Boolean, id: Int) {
+        _history.value = _history.value.map {
+            if (it.id == id) it.copy(isChecked = isChecked) else it
+        }
     }
 }

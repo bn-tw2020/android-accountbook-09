@@ -1,7 +1,6 @@
 package com.woowa.accountbook.ui.calendar
 
 import androidx.lifecycle.ViewModel
-import com.woowa.accountbook.common.rawToYearAndMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

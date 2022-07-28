@@ -15,7 +15,7 @@ class CustomCalendar {
     fun setYearAndMonth(year: Int, month: Int): String {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1)
-        yearMonthPair = Pair(year, month - 1)
+        yearMonthPair = Pair(year, month)
         return rawToYearAndMonth(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
     }
 

@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
-): DataSource {
+) : DataSource {
 
     /**
      * @param type: 지출(0), 수입(1)
@@ -26,7 +26,8 @@ class LocalDataSource @Inject constructor(
     override fun findByCategoryType(type: String): List<Category> {
         val categoryList = mutableListOf<Category>()
         databaseHelper.readableDatabase.use { database ->
-            val sql = "SELECT * FROM $TABLE_CATEGORY WHERE ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
+            val sql =
+                "SELECT * FROM $TABLE_CATEGORY WHERE ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
             val cursor = database.rawQuery(sql, arrayOf(type))
             return cursor.use {
                 while (it.moveToNext()) {

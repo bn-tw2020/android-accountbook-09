@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,16 +21,20 @@ fun AccountBookCheckBox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     checkedColor: Color,
+    enabled: Boolean = true,
+    disabledColor: Color = MaterialTheme.colors.onSurface.copy(alpha = ContentAlpha.disabled),
     uncheckedColor: Color,
     checkmarkColor: Color
 ) {
     Checkbox(
         checked = checked,
+        enabled = enabled,
         onCheckedChange = { onCheckedChange(it) },
         colors = CheckboxDefaults.colors(
             checkedColor = checkedColor,
             uncheckedColor = uncheckedColor,
-            checkmarkColor = checkmarkColor
+            checkmarkColor = checkmarkColor,
+            disabledColor = disabledColor
         ),
         modifier = Modifier.size(24.dp)
     )
@@ -80,6 +86,36 @@ fun HistoryUnCheckBoxPreview() {
             checked = false,
             onCheckedChange = { },
             checkedColor = White,
+            uncheckedColor = White,
+            checkmarkColor = Purple
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HistoryDisEnabledUnCheckBoxPreview() {
+    Row {
+        AccountBookCheckBox(
+            checked = false,
+            onCheckedChange = { },
+            enabled = false,
+            checkedColor = White,
+            uncheckedColor = White,
+            checkmarkColor = Purple
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HistoryDisEnabledCheckBoxPreview() {
+    Row {
+        AccountBookCheckBox(
+            checked = true,
+            onCheckedChange = { },
+            checkedColor = White,
+            enabled = false,
             uncheckedColor = White,
             checkmarkColor = Purple
         )
