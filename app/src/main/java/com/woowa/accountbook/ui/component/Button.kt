@@ -66,7 +66,8 @@ fun AccountBookButton(
 fun LeftCornerCheckButton(
     checkBox: Boolean,
     checked: Boolean,
-    onCheckedChange: () -> Unit,
+    onClicked: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
     checkedColor: Color,
     enabled: Boolean = true,
     uncheckedColor: Color,
@@ -81,7 +82,7 @@ fun LeftCornerCheckButton(
         shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
         enabled = enabled,
         enabledBackgroundColor = LightPurple.copy(alpha = 0.5f),
-        onClicked = {},
+        onClicked = { onClicked() },
         isClick = checked,
         clickBackgroundColor = Purple,
         unClickBackgroundColor = LightPurple
@@ -89,7 +90,7 @@ fun LeftCornerCheckButton(
         if (checkBox) {
             AccountBookCheckBox(
                 checked = checked,
-                onCheckedChange = { },
+                onCheckedChange = { onCheckedChange(it) },
                 checkedColor = checkedColor,
                 uncheckedColor = uncheckedColor,
                 checkmarkColor = checkmarkColor
@@ -115,7 +116,8 @@ fun LeftCornerCheckButton(
 fun RightCornerCheckButton(
     checkBox: Boolean,
     checked: Boolean,
-    onCheckedChange: () -> Unit,
+    onClicked: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
     checkedColor: Color,
     enabled: Boolean = true,
     uncheckedColor: Color,
@@ -130,7 +132,7 @@ fun RightCornerCheckButton(
         shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         enabled = enabled,
         enabledBackgroundColor = LightPurple.copy(alpha = 0.5f),
-        onClicked = {},
+        onClicked = { onClicked() },
         isClick = checked,
         clickBackgroundColor = Purple,
         unClickBackgroundColor = LightPurple
@@ -138,7 +140,7 @@ fun RightCornerCheckButton(
         if (checkBox) {
             AccountBookCheckBox(
                 checked = checked,
-                onCheckedChange = { },
+                onCheckedChange = { onCheckedChange(it) },
                 checkedColor = checkedColor,
                 uncheckedColor = uncheckedColor,
                 checkmarkColor = checkmarkColor
@@ -206,6 +208,7 @@ fun LeftCornerLabelCheckBoxPreview() {
     LeftCornerCheckButton(
         checkBox = true,
         checked = true,
+        onClicked = {},
         onCheckedChange = { },
         checkedColor = White,
         uncheckedColor = White,
@@ -221,6 +224,7 @@ fun LeftCornerLabelUnCheckBoxPreview() {
     LeftCornerCheckButton(
         checkBox = true,
         checked = false,
+        onClicked = {},
         onCheckedChange = { },
         checkedColor = White,
         uncheckedColor = White,
@@ -237,6 +241,7 @@ fun RightCornerLabelCheckBoxPreview() {
     RightCornerCheckButton(
         checkBox = true,
         checked = true,
+        onClicked = {},
         onCheckedChange = { },
         checkedColor = White,
         uncheckedColor = White,
@@ -252,6 +257,7 @@ fun RightCornerLabelUnCheckBoxPreview() {
     RightCornerCheckButton(
         checkBox = true,
         checked = false,
+        onClicked = {},
         onCheckedChange = { },
         checkedColor = White,
         uncheckedColor = White,
@@ -268,6 +274,7 @@ fun AccountBoxIncomeAndExpense() {
         LeftCornerCheckButton(
             checkBox = true,
             checked = true,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,
@@ -279,6 +286,7 @@ fun AccountBoxIncomeAndExpense() {
         RightCornerCheckButton(
             checkBox = true,
             checked = false,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,
@@ -297,6 +305,7 @@ fun AccountBoxDisabledIncomeAndExpense() {
             checkBox = true,
             checked = true,
             enabled = false,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,
@@ -309,6 +318,7 @@ fun AccountBoxDisabledIncomeAndExpense() {
             checkBox = true,
             checked = false,
             enabled = false,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,
@@ -326,6 +336,7 @@ fun AccountBoxIncomeAndExpense2() {
         LeftCornerCheckButton(
             checkBox = false,
             checked = true,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,
@@ -337,6 +348,7 @@ fun AccountBoxIncomeAndExpense2() {
         RightCornerCheckButton(
             checkBox = false,
             checked = false,
+            onClicked = {},
             onCheckedChange = { },
             checkedColor = White,
             uncheckedColor = White,

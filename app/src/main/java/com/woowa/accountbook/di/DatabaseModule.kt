@@ -15,7 +15,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(context: ApplicationContext): DatabaseHelper {
-        return DatabaseHelper(context = context as Context)
+    fun provideDatabase(@ApplicationContext context: Context): DatabaseHelper {
+        return DatabaseHelper(context = context)
     }
 }

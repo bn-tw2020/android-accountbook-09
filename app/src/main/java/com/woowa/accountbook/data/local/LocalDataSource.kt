@@ -4,8 +4,18 @@ import android.content.ContentValues
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.data.entitiy.Payment
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.ACCOUNT_BOOK_COL_CATEGORY
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.ACCOUNT_BOOK_COL_DAY
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.ACCOUNT_BOOK_COL_MONTH
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.ACCOUNT_BOOK_COL_PAYMENT
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.CATEGORY_COL_ID
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.PAYMENT_COL_ID
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.TABLE_ACCOUNT_BOOK
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.TABLE_CATEGORY
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.TABLE_PAYMENT
+import javax.inject.Inject
 
-class LocalDataSource(
+class LocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
 ): DataSource {
 
@@ -16,7 +26,7 @@ class LocalDataSource(
     override fun findByCategoryType(type: String): List<Category> {
         val categoryList = mutableListOf<Category>()
         databaseHelper.readableDatabase.use { database ->
-            val sql = "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
+            val sql = "SELECT * FROM $TABLE_CATEGORY WHERE ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
             val cursor = database.rawQuery(sql, arrayOf(type))
             return cursor.use {
                 while (it.moveToNext()) {
@@ -42,7 +52,7 @@ class LocalDataSource(
         val paymentList = mutableListOf<Payment>()
         databaseHelper.readableDatabase.use { database ->
             val cursor = database.query(
-                DatabaseHelper.TABLE_PAYMENT,
+                TABLE_PAYMENT,
                 arrayOf(DatabaseHelper.PAYMENT_COL_ID, DatabaseHelper.PAYMENT_COL_NAME),
                 null,
                 null,
@@ -75,7 +85,7 @@ class LocalDataSource(
         databaseHelper.readableDatabase.use { database ->
 
             val sql =
-                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_DAY} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
+                "SELECT * FROM (SELECT * FROM $TABLE_ACCOUNT_BOOK WHERE $ACCOUNT_BOOK_COL_MONTH = $month ORDER BY $ACCOUNT_BOOK_COL_DAY DESC) as T, $TABLE_CATEGORY, $TABLE_PAYMENT WHERE T.$ACCOUNT_BOOK_COL_CATEGORY = $TABLE_CATEGORY.$CATEGORY_COL_ID AND T.$ACCOUNT_BOOK_COL_PAYMENT = $TABLE_PAYMENT.$PAYMENT_COL_ID"
             val cursor = database.rawQuery(sql, null)
             return cursor.use {
                 while (it.moveToNext()) {
@@ -128,7 +138,7 @@ class LocalDataSource(
     override fun deleteByCategoryId(list: List<Int>) {
         databaseHelper.writableDatabase.use { database ->
             list.forEach { id ->
-                database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_ID} = $id")
+                database.execSQL("DELETE FROM $TABLE_CATEGORY WHERE ${DatabaseHelper.CATEGORY_COL_ID} = $id")
             }
         }
     }
@@ -136,7 +146,7 @@ class LocalDataSource(
     override fun deleteByPaymentId(list: List<Int>) {
         databaseHelper.writableDatabase.use { database ->
             list.forEach { id ->
-                database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = $id")
+                database.execSQL("DELETE FROM $TABLE_PAYMENT WHERE ${DatabaseHelper.PAYMENT_COL_ID} = $id")
             }
         }
     }
@@ -148,7 +158,7 @@ class LocalDataSource(
                 put(DatabaseHelper.CATEGORY_COL_COLOR, color)
                 put(DatabaseHelper.CATEGORY_COL_IS_INCOME, isIncome)
             }
-            database.insert(DatabaseHelper.TABLE_CATEGORY, null, contentValues)
+            database.insert(TABLE_CATEGORY, null, contentValues)
         }
     }
 
@@ -157,7 +167,7 @@ class LocalDataSource(
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.PAYMENT_COL_NAME, name)
             }
-            database.insert(DatabaseHelper.TABLE_PAYMENT, null, contentValues)
+            database.insert(TABLE_PAYMENT, null, contentValues)
         }
     }
 

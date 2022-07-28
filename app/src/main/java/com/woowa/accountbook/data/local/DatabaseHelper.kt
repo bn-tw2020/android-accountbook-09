@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    private val instance: DatabaseHelper = DatabaseHelper(context)
-
     override fun onCreate(database: SQLiteDatabase?) {
         database?.apply {
             execSQL("DROP TABLE IF EXISTS $TABLE_PAYMENT")

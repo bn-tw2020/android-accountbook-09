@@ -1,7 +1,9 @@
 package com.woowa.accountbook.ui
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -44,10 +46,11 @@ fun AccountBookApp() {
                 }
             },
             scaffoldState = appState.scaffoldState
-        ) {
+        ) { innerPaddingModifier ->
             NavHost(
                 navController = appState.navController,
-                startDestination = Destinations.HOME
+                startDestination = Destinations.HOME,
+                modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 accountBookNavGraph(
                     navController = appState.navController,

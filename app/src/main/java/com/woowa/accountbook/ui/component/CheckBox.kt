@@ -1,7 +1,8 @@
 package com.woowa.accountbook.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Checkbox
 import androidx.compose.material.CheckboxDefaults
 import androidx.compose.runtime.Composable
@@ -9,19 +10,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.woowa.accountbook.ui.theme.*
+import com.woowa.accountbook.ui.theme.Purple
+import com.woowa.accountbook.ui.theme.Red
+import com.woowa.accountbook.ui.theme.White
 
 @Composable
 fun AccountBookCheckBox(
     checked: Boolean,
-    onCheckedChange: () -> Unit,
+    onCheckedChange: (Boolean) -> Unit,
     checkedColor: Color,
     uncheckedColor: Color,
     checkmarkColor: Color
 ) {
     Checkbox(
         checked = checked,
-        onCheckedChange = { onCheckedChange() },
+        onCheckedChange = { onCheckedChange(it) },
         colors = CheckboxDefaults.colors(
             checkedColor = checkedColor,
             uncheckedColor = uncheckedColor,
