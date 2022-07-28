@@ -3,10 +3,7 @@ package com.woowa.accountbook.ui.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +24,7 @@ fun AccountBookAppBar(
     navigationIcon: ImageVector?,
     onNavigationClicked: () -> Unit,
     actionIcon: ImageVector?,
+    actionIconColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
     onActionClicked: () -> Unit,
     backgroundColor: Color = OffWhite,
     contentColor: Color = Purple,
@@ -67,7 +65,11 @@ fun AccountBookAppBar(
                         .padding(horizontal = 16.dp - 4.dp),
                     onClick = { onActionClicked() }
                 ) {
-                    Icon(imageVector = actionIcon, contentDescription = "action_icon")
+                    Icon(
+                        imageVector = actionIcon,
+                        contentDescription = "action_icon",
+                        tint = actionIconColor
+                    )
                 }
             }
         }
