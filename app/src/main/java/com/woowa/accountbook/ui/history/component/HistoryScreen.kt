@@ -19,10 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowa.accountbook.common.rawToMoneyFormat
 import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.ui.calendar.CalendarViewModel
-import com.woowa.accountbook.ui.component.AccountBookAppBar
-import com.woowa.accountbook.ui.component.LabelText
-import com.woowa.accountbook.ui.component.LeftCornerCheckButton
-import com.woowa.accountbook.ui.component.RightCornerCheckButton
+import com.woowa.accountbook.ui.component.*
 import com.woowa.accountbook.ui.history.HistoryViewModel
 import com.woowa.accountbook.ui.iconpack.IconPack
 import com.woowa.accountbook.ui.iconpack.LeftArrow
@@ -35,7 +32,7 @@ fun HistoryScreen(
     calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
-    val (_, month) = calendarViewModel.yearMonthPair.value
+    val (year, month) = calendarViewModel.yearMonthPair.value
     historyViewModel.getHistory(month)
     val inComeIsChecked = remember { mutableStateOf(true) }
     val expenseIsChecked = remember { mutableStateOf(true) }
@@ -56,6 +53,26 @@ fun HistoryScreen(
                     calendarViewModel.nextYearAndMonth()
                     inComeIsChecked.value = true
                     expenseIsChecked.value = true
+                },
+                dialog = { isShow, onDismissRequest ->
+                    AccountBookDialog(
+                        isShow = isShow,
+                        onDismissRequest = { onDismissRequest(it) },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        content = {
+                            YearAndMonthPicker(
+                                year,
+                                month,
+                                onClicked = { year, month ->
+                                    onDismissRequest(it)
+                                    calendarViewModel.setYearAndMonth(year, month)
+                                    inComeIsChecked.value = true
+                                    expenseIsChecked.value = true
+                                }
+                            )
+                        }
+                    )
                 }
             )
         }
@@ -77,7 +94,7 @@ fun HistoryScreen(
                 onExpenseButtonClicked = { expenseIsChecked.value = !expenseIsChecked.value },
                 onIncomeClicked = { historyViewModel.getIncomeHistory() },
                 onExpenseClicked = { historyViewModel.getExpenseHistory() },
-                onBothClicked = { historyViewModel.getHistory(7) },
+                onBothClicked = { historyViewModel.getHistory(month) },
                 onEmptyClicked = { historyViewModel.getEmptyHistory() }
             )
             if (groupHistory.isEmpty() || (!inComeIsChecked.value && !expenseIsChecked.value)) {

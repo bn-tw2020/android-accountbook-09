@@ -12,10 +12,11 @@ class CustomCalendar {
     val currentYearAndMonth = "${NOW_YEAR}년 ${NOW_MONTH}월"
     var yearMonthPair = Pair(NOW_YEAR, NOW_MONTH)
 
-    fun setYearAndMonth(year: Int, month: Int) {
+    fun setYearAndMonth(year: Int, month: Int): String {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1)
         yearMonthPair = Pair(year, month - 1)
+        return rawToYearAndMonth(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
     }
 
     fun previousYearAndMonth(): String {

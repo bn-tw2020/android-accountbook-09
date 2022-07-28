@@ -17,8 +17,7 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
     val yearMonthPair: StateFlow<Pair<Int, Int>> get() = _yearMonthPair
 
     fun setYearAndMonth(year: Int, month: Int) {
-        calendar.setYearAndMonth(year, month)
-        _yearAndMonth.value = rawToYearAndMonth(year, month)
+        _yearAndMonth.value = calendar.setYearAndMonth(year, month)
         _yearMonthPair.value = calendar.yearMonthPair
     }
 
