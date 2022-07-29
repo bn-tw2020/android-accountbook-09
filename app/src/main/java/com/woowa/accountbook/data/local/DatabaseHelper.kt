@@ -3,9 +3,10 @@ package com.woowa.accountbook.data.local
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import javax.inject.Inject
 
 
-class DatabaseHelper(context: Context) :
+class DatabaseHelper @Inject constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     override fun onCreate(database: SQLiteDatabase?) {
