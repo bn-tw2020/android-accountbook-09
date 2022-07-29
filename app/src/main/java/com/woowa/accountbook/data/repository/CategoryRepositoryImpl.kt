@@ -5,7 +5,9 @@ import com.woowa.accountbook.data.local.category.CategoryDataSource
 import com.woowa.accountbook.domain.repository.category.CategoryRepository
 import javax.inject.Inject
 
-class CategoryRepositoryImpl @Inject constructor(private val categoryDataSource: CategoryDataSource): CategoryRepository {
+class CategoryRepositoryImpl @Inject constructor(
+    private val categoryDataSource: CategoryDataSource
+) : CategoryRepository {
 
     override fun getCategoriesByType(type: String): Result<List<Category>> {
         TODO("Not yet implemented")

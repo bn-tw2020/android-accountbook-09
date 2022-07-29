@@ -5,7 +5,9 @@ import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.local.DatabaseHelper
 import javax.inject.Inject
 
-class CategoryLocalDataSource @Inject constructor(private val databaseHelper: DatabaseHelper) : CategoryDataSource {
+class CategoryLocalDataSource @Inject constructor(
+    private val databaseHelper: DatabaseHelper
+) : CategoryDataSource {
 
     override fun findByType(type: String): List<Category> {
         val categoryList = mutableListOf<Category>()

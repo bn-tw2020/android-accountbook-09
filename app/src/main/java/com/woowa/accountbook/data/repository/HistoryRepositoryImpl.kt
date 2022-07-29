@@ -5,22 +5,24 @@ import com.woowa.accountbook.data.local.history.HistoryDataSource
 import com.woowa.accountbook.domain.repository.history.HistoryRepository
 import javax.inject.Inject
 
-class HistoryRepositoryImpl @Inject constructor(private val historyDataSource: HistoryDataSource): HistoryRepository {
+class HistoryRepositoryImpl @Inject constructor(
+    private val historyDataSource: HistoryDataSource
+) : HistoryRepository {
 
     override fun getHistories(): Result<List<History>> {
-        TODO("Not yet implemented")
+        return runCatching { historyDataSource.findByAll() }
     }
 
     override fun getHistoriesByMonth(month: Int): Result<List<History>> {
         return runCatching { historyDataSource.findByMonth(month.toString()) }
     }
 
-    override fun getHistoriesMonthAndType(month: String, type: Boolean): Result<List<History>> {
-        TODO("Not yet implemented")
+    override fun getHistoriesMonthAndType(month: Int, type: Boolean): Result<List<History>> {
+        return runCatching { historyDataSource.findByMonthAndType(month.toString(), type) }
     }
 
     override fun removeHistories(list: List<Int>) {
-        TODO("Not yet implemented")
+        runCatching { historyDataSource.deleteById(list) }
     }
 
     override fun saveHistory(
@@ -32,6 +34,16 @@ class HistoryRepositoryImpl @Inject constructor(private val historyDataSource: H
         day: Int,
         paymentId: Int
     ) {
-        TODO("Not yet implemented")
+        runCatching {
+            historyDataSource.save(
+                money,
+                categoryId,
+                content,
+                year,
+                month,
+                day,
+                paymentId
+            )
+        }
     }
 }

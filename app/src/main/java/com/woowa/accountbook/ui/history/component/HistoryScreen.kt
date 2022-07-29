@@ -7,7 +7,10 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,12 +32,12 @@ fun HistoryScreen(
     historyViewModel: HistoryViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
+    val inComeIsChecked = remember { mutableStateOf(true) }
+    val expenseIsChecked = remember { mutableStateOf(false) }
+    val editMode = remember { mutableStateOf(false) }
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.value
-    historyViewModel.getHistory(month)
-    val inComeIsChecked = remember { mutableStateOf(true) }
-    val expenseIsChecked = remember { mutableStateOf(true) }
-    val editMode = remember { mutableStateOf(false) }
+    historyViewModel.initHistory(month)
 
     Scaffold(
         backgroundColor = OffWhite,
@@ -46,13 +49,13 @@ fun HistoryScreen(
                     onNavigationClicked = {
                         calendarViewModel.previousYearAndMonth()
                         inComeIsChecked.value = true
-                        expenseIsChecked.value = true
+                        expenseIsChecked.value = false
                     },
                     actionIcon = IconPack.RightArrow,
                     onActionClicked = {
                         calendarViewModel.nextYearAndMonth()
                         inComeIsChecked.value = true
-                        expenseIsChecked.value = true
+                        expenseIsChecked.value = false
                     },
                     dialog = { isShow, onDismissRequest ->
                         AccountBookDialog(
@@ -68,7 +71,7 @@ fun HistoryScreen(
                                         onDismissRequest(it)
                                         calendarViewModel.setYearAndMonth(year, month)
                                         inComeIsChecked.value = true
-                                        expenseIsChecked.value = true
+                                        expenseIsChecked.value = false
                                     }
                                 )
                             }
@@ -93,6 +96,10 @@ fun HistoryScreen(
     ) {
         val histories = historyViewModel.history.collectAsState().value
         val totalViewModel = historyViewModel.totalHistory.collectAsState().value
+
+        if (inComeIsChecked.value && !expenseIsChecked.value) historyViewModel.getIncomeHistory()
+        else if (!inComeIsChecked.value && expenseIsChecked.value) historyViewModel.getExpenseHistory()
+
         val groupHistory = histories.groupBy { it.day }
         val monthTotalIncome =
             totalViewModel.filter { it.category.isIncome == 1 }.sumOf { it.money }
@@ -112,7 +119,7 @@ fun HistoryScreen(
                 onExpenseButtonClicked = { expenseIsChecked.value = !expenseIsChecked.value },
                 onIncomeClicked = { historyViewModel.getIncomeHistory() },
                 onExpenseClicked = { historyViewModel.getExpenseHistory() },
-                onBothClicked = { historyViewModel.getHistory(month) },
+                onBothClicked = { historyViewModel.getHistory() },
                 onEmptyClicked = { historyViewModel.getEmptyHistory() }
             )
             if (groupHistory.isEmpty() || (!inComeIsChecked.value && !expenseIsChecked.value)) {

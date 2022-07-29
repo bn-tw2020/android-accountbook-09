@@ -9,17 +9,20 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoryViewModel @Inject constructor(private val repository: HistoryRepository) :
+class HistoryViewModel @Inject constructor(private val historyRepository: HistoryRepository) :
     ViewModel() {
 
     val totalHistory = MutableStateFlow<List<History>>(emptyList())
     private val _history = MutableStateFlow<List<History>>(emptyList())
     val history: StateFlow<List<History>> get() = _history
 
-    fun getHistory(month: Int) {
-        val result = repository.getHistoriesByMonth(month).getOrThrow()
+    fun initHistory(month: Int) {
+        val result = historyRepository.getHistoriesByMonth(month).getOrThrow()
         totalHistory.value = result
-        _history.value = result
+    }
+
+    fun getHistory() {
+        _history.value = totalHistory.value
     }
 
     fun getIncomeHistory() {

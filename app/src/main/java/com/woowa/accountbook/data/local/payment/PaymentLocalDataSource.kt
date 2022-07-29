@@ -5,7 +5,9 @@ import com.woowa.accountbook.data.entitiy.Payment
 import com.woowa.accountbook.data.local.DatabaseHelper
 import javax.inject.Inject
 
-class PaymentLocalDataSource @Inject constructor(private val databaseHelper: DatabaseHelper) : PaymentDataSource {
+class PaymentLocalDataSource @Inject constructor(
+    private val databaseHelper: DatabaseHelper
+) : PaymentDataSource {
 
     override fun findAll(): List<Payment> {
         val paymentList = mutableListOf<Payment>()
