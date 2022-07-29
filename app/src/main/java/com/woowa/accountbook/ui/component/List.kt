@@ -15,10 +15,7 @@ import com.woowa.accountbook.common.rawToMoneyFormat
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.data.entitiy.Payment
-import com.woowa.accountbook.ui.theme.LightPurple
-import com.woowa.accountbook.ui.theme.Purple
-import com.woowa.accountbook.ui.theme.Red
-import com.woowa.accountbook.ui.theme.White
+import com.woowa.accountbook.ui.theme.*
 
 @Composable
 fun HistoryItemTitle(
@@ -78,9 +75,9 @@ fun HistoryItem(
     onLongClicked: (Boolean, Int) -> Unit,
     onCheckedItem: (Boolean, Int) -> Unit
 ) {
+
     Row(
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
             .combinedClickable(
                 onClick = {},
                 onLongClick = { onLongClicked(isEdit, history.id) }
@@ -88,6 +85,7 @@ fun HistoryItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (isEdit) {
+            Spacer(modifier = Modifier.width(16.dp))
             AccountBookCheckBox(
                 checked = history.isChecked,
                 onCheckedChange = { onCheckedItem(it, history.id) },
@@ -95,44 +93,41 @@ fun HistoryItem(
                 uncheckedColor = Purple,
                 checkmarkColor = White
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
         }
         Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                LabelText(
-                    text = history.category.name,
-                    textStyle = MaterialTheme.typography.caption,
-                    color = Color(android.graphics.Color.parseColor(history.category.color))
-                )
-                Text(
-                    text = history.payment.name,
-                    style = MaterialTheme.typography.caption,
-                    color = Purple
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = history.content,
-                    style = MaterialTheme.typography.subtitle2,
-                    color = Purple
-                )
-                Text(
-                    text = "${rawToMoneyFormat(history.money, history.category.isIncome)}원",
-                    style = MaterialTheme.typography.subtitle2,
-                    color = Red
-                )
-            }
+            BothSideText(
+                leftText = {
+                    LabelText(
+                        text = history.category.name,
+                        textStyle = MaterialTheme.typography.caption,
+                        color = Color(android.graphics.Color.parseColor(history.category.color))
+                    )
+                },
+                rightText = {
+                    Text(
+                        text = history.payment.name,
+                        style = MaterialTheme.typography.caption,
+                        color = Purple
+                    )
+                }
+            )
+            BothSideText(
+                leftText = {
+                    Text(
+                        text = history.content,
+                        style = MaterialTheme.typography.subtitle2,
+                        color = Purple
+                    )
+                },
+                rightText = {
+                    Text(
+                        text = "${rawToMoneyFormat(history.money, history.category.isIncome)}원",
+                        style = MaterialTheme.typography.subtitle2,
+                        color = if (history.category.isIncome == 1) Green3 else Red
+                    )
+                }
+            )
         }
     }
 }
