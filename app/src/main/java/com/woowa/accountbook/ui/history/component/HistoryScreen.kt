@@ -100,7 +100,7 @@ fun HistoryScreen(
             totalViewModel.filter { it.category.isIncome == 0 }.sumOf { it.money }
 
         Column(modifier = Modifier.fillMaxSize()) {
-            HistoryFilterButton(
+            FilterCheckBoxButton(
                 totalIncome = monthTotalIncome,
                 totalExpense = monthTotalExpense,
                 inComeIsChecked = inComeIsChecked,
@@ -186,112 +186,6 @@ private fun HistoryLazyColumn(
         }
 
     }
-}
-
-@Composable
-private fun HistoryFilterButton(
-    totalIncome: Int,
-    totalExpense: Int,
-    inComeIsChecked: MutableState<Boolean>,
-    expenseIsChecked: MutableState<Boolean>,
-    enabled: Boolean,
-    onIncomeCheckBoxClicked: (Boolean) -> Unit,
-    onExpenseCheckBoxClicked: (Boolean) -> Unit,
-    onIncomeButtonClicked: () -> Unit,
-    onExpenseButtonClicked: () -> Unit,
-    onIncomeClicked: () -> Unit,
-    onExpenseClicked: () -> Unit,
-    onBothClicked: () -> Unit,
-    onEmptyClicked: () -> Unit
-) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        LeftCornerCheckButton(
-            enabled = enabled,
-            checkBox = true,
-            checked = inComeIsChecked.value,
-            onClicked = {
-                onIncomeButtonClicked()
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            onCheckedChange = {
-                onIncomeCheckBoxClicked(it)
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            disabledColor = White,
-            checkedColor = White,
-            uncheckedColor = White,
-            checkmarkColor = Purple,
-            labelText = "수입",
-            labelPriceText = rawToMoneyFormat(totalIncome, 1)
-        )
-
-        RightCornerCheckButton(
-            enabled = enabled,
-            checkBox = true,
-            checked = expenseIsChecked.value,
-            onClicked = {
-                onExpenseButtonClicked()
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            onCheckedChange = {
-                onExpenseCheckBoxClicked(it)
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            disabledColor = White,
-            checkedColor = White,
-            uncheckedColor = White,
-            checkmarkColor = Purple,
-            labelText = "지출",
-            labelPriceText = rawToMoneyFormat(totalExpense, 0)
-        )
-    }
-}
-
-private fun onClickFilterButton(
-    inComeIsChecked: MutableState<Boolean>,
-    expenseIsChecked: MutableState<Boolean>,
-    onBothClicked: () -> Unit,
-    onIncomeClicked: () -> Unit,
-    onExpenseClicked: () -> Unit,
-    onEmptyClicked: () -> Unit
-) {
-    if (inComeIsChecked.value && expenseIsChecked.value) onBothClicked()
-    else if (inComeIsChecked.value) onIncomeClicked()
-    else if (expenseIsChecked.value) onExpenseClicked()
-    else onEmptyClicked()
 }
 
 @Preview(showBackground = true)
