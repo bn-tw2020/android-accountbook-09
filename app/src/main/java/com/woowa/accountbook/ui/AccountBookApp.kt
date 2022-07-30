@@ -5,13 +5,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import com.woowa.accountbook.ui.calendar.CalendarViewModel
 import com.woowa.accountbook.ui.calendar.component.CalendarScreen
 import com.woowa.accountbook.ui.component.AccountBookFloatingButton
+import com.woowa.accountbook.ui.history.HistoryViewModel
 import com.woowa.accountbook.ui.history.component.HistoryScreen
 import com.woowa.accountbook.ui.history.component.RegistrationScreen
 import com.woowa.accountbook.ui.iconpack.IconPack
@@ -47,6 +50,10 @@ fun AccountBookApp() {
             },
             scaffoldState = appState.scaffoldState
         ) { innerPaddingModifier ->
+
+            val historyViewModel: HistoryViewModel = hiltViewModel()
+            val calendarViewModel: CalendarViewModel = hiltViewModel()
+
             NavHost(
                 navController = appState.navController,
                 startDestination = Destinations.HOME,
@@ -54,7 +61,9 @@ fun AccountBookApp() {
             ) {
                 accountBookNavGraph(
                     navController = appState.navController,
-                    navigationUp = { appState.navigateUp() }
+                    navigationUp = { appState.navigateUp() },
+                    historyViewModel = historyViewModel,
+                    calendarViewModel = calendarViewModel
                 )
             }
         }
@@ -98,13 +107,15 @@ fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
 
 private fun NavGraphBuilder.accountBookNavGraph(
     navController: NavController,
-    navigationUp: () -> Unit
+    navigationUp: () -> Unit,
+    historyViewModel: HistoryViewModel,
+    calendarViewModel: CalendarViewModel
 ) {
     navigation(
         route = Destinations.HOME,
         startDestination = HomeSections.HISTORY.route
     ) {
-        addHomeGraph()
+        addHomeGraph(historyViewModel, calendarViewModel)
     }
     composable(route = Destinations.REGISTRATION) {
         RegistrationScreen()
@@ -114,15 +125,18 @@ private fun NavGraphBuilder.accountBookNavGraph(
     }
 }
 
-private fun NavGraphBuilder.addHomeGraph() {
+private fun NavGraphBuilder.addHomeGraph(
+    historyViewModel: HistoryViewModel,
+    calendarViewModel: CalendarViewModel
+) {
     composable(HomeSections.HISTORY.route) {
-        HistoryScreen()
+        HistoryScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.CALENDAR.route) {
         CalendarScreen()
     }
     composable(HomeSections.STATISTICS.route) {
-        StatisticsScreen()
+        StatisticsScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.SETTING.route) {
         SettingScreen()
