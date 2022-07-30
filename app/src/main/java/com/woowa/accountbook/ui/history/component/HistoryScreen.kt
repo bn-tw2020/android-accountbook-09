@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,8 +33,8 @@ fun HistoryScreen(
     historyViewModel: HistoryViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
-    val inComeIsChecked = remember { mutableStateOf(true) }
-    val expenseIsChecked = remember { mutableStateOf(false) }
+    val inComeIsChecked = rememberSaveable { mutableStateOf(true) }
+    val expenseIsChecked = rememberSaveable { mutableStateOf(false) }
     val editMode = remember { mutableStateOf(false) }
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.value

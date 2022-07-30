@@ -39,6 +39,11 @@ class HistoryViewModel @Inject constructor(private val historyRepository: Histor
         _history.value = emptyList()
     }
 
+    fun getHistoryMonthAndType(month: Int, type: Boolean) {
+        val result = historyRepository.getHistoriesMonthAndType(month, type).getOrThrow()
+        _history.value = result
+    }
+
     fun resetCheckedHistory() {
         _history.value = _history.value.map {
             it.copy(isChecked = false)
