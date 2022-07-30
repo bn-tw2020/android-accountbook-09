@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.woowa.accountbook.ui.theme.Green2
@@ -27,9 +28,12 @@ fun LabelText(
         Modifier
             .clip(RoundedCornerShape(50.dp))
             .background(color)
+            .width(58.dp)
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
             text = text,
             style = textStyle,
             color = White
