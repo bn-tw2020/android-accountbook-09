@@ -1,9 +1,6 @@
 package com.woowa.accountbook.ui.calendar.component
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
@@ -83,7 +80,9 @@ fun CalendarScreen(
             )
         }
     ) {
-        Column {
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
+        ) {
             val selectedDate = calendarViewModel.selectedDate.collectAsState().value
             HistoryCalendar(
                 dateList = dateList,
@@ -179,7 +178,9 @@ private fun HistoryCalendar(
     selectedDate: DateItem?
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxSize()
+            .height((((dateList.size / 7) * 100) + ((dateList.size / 7) - 1) + 1).dp),
         cells = GridCells.Fixed(count = 7)
     ) {
         itemsIndexed(dateList) { _, dateItem ->
