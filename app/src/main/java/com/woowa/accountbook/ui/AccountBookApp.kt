@@ -133,7 +133,7 @@ private fun NavGraphBuilder.addHomeGraph(
         HistoryScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.CALENDAR.route) {
-        CalendarScreen()
+        CalendarScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.STATISTICS.route) {
         StatisticsScreen(historyViewModel, calendarViewModel)

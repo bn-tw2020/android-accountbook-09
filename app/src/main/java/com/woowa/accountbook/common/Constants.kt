@@ -4,3 +4,4 @@ import java.util.*
 
 val NOW_YEAR = Calendar.getInstance().get(Calendar.YEAR)
 val NOW_MONTH = Calendar.getInstance().get(Calendar.MONTH) + 1
+val NOW_DAY = Calendar.getInstance().get(Calendar.DATE)
