@@ -3,6 +3,8 @@ package com.woowa.accountbook.ui.calendar.component
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
@@ -13,7 +15,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,7 +84,13 @@ fun CalendarScreen(
         }
     ) {
         Column {
-            HistoryCalendar(dateList)
+            val selectedDate = calendarViewModel.selectedDate.collectAsState().value
+            HistoryCalendar(
+                dateList = dateList,
+                onCheckToday = { if (calendarViewModel.isToday(it)) White else OffWhite },
+                onClicked = { calendarViewModel.selectedDate(it) },
+                selectedDate = selectedDate
+            )
             Spacer(modifier = Modifier.height(16.dp))
             val totalViewModel = historyViewModel.totalHistory.collectAsState().value
             val monthTotalIncome =
@@ -162,29 +172,53 @@ private fun MonthIncomeAndExpense(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HistoryCalendar(dateList: List<DateItem>) {
+private fun HistoryCalendar(
+    dateList: List<DateItem>,
+    onCheckToday: (DateItem) -> Color,
+    onClicked: (DateItem) -> Unit,
+    selectedDate: DateItem?
+) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxWidth(),
         cells = GridCells.Fixed(count = 7)
     ) {
-        itemsIndexed(dateList) { idx, dateItem ->
-            CalendarItem(dateItem)
+        itemsIndexed(dateList) { _, dateItem ->
+            CalendarItem(
+                dateItem = dateItem,
+                onCheckToday = { onCheckToday(it) },
+                onClicked = { onClicked(it) },
+                selectedDate = selectedDate
+            )
         }
     }
 }
 
 
 @Composable
-fun CalendarItem(dateItem: DateItem) {
+fun CalendarItem(
+    dateItem: DateItem,
+    onCheckToday: (DateItem) -> Color,
+    onClicked: (DateItem) -> Unit,
+    selectedDate: DateItem?
+) {
+    var color = onCheckToday(dateItem)
+    if (selectedDate == dateItem) color = Purple40
+
     Column(
         modifier = Modifier
             .height(100.dp)
+            .background(color)
             .border(
                 width = 0.5.dp,
                 color = LightPurple,
                 shape = RectangleShape
             )
-            .padding(4.dp),
+            .padding(4.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = { onClicked(dateItem) },
+                indication = null
+            ),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         val income = dateItem.income ?: 0

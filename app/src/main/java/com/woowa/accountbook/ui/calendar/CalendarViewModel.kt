@@ -1,6 +1,10 @@
 package com.woowa.accountbook.ui.calendar
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.woowa.accountbook.common.NOW_DAY
+import com.woowa.accountbook.common.NOW_MONTH
+import com.woowa.accountbook.common.NOW_YEAR
 import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.domain.entity.DateItem
 import com.woowa.accountbook.ui.theme.LightPurple
@@ -21,6 +25,14 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
 
     private val _dateList = MutableStateFlow<List<DateItem>>(emptyList())
     val dateList: StateFlow<List<DateItem>> get() = _dateList
+
+    private val _selectedDate = MutableStateFlow<DateItem?>(null)
+    val selectedDate: StateFlow<DateItem?> get() = _selectedDate
+
+    fun selectedDate(dateItem: DateItem) {
+        _selectedDate.value = dateItem
+        Log.d("test", "selectedDate: ${selectedDate.value?.date}")
+    }
 
     fun setYearAndMonth(year: Int, month: Int) {
         _yearAndMonth.value = calendar.setYearAndMonth(year, month)
@@ -81,5 +93,9 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
                 _dateList.value = dateItems
             }
         }
+    }
+
+    fun isToday(dateItem: DateItem): Boolean {
+        return dateItem.year == NOW_YEAR && dateItem.month == NOW_MONTH && dateItem.date == NOW_DAY
     }
 }
