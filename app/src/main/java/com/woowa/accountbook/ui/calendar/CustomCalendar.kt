@@ -50,6 +50,7 @@ class CustomCalendar {
     fun nextYearAndMonth(): String {
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
+        calendar.set(Calendar.DATE, 1)
 
         if (month == 12) {
             calendar.set(Calendar.YEAR, year + 1)
