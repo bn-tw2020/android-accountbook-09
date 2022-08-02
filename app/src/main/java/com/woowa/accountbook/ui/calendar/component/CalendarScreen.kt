@@ -214,7 +214,7 @@ fun CalendarItem(
                 color = LightPurple,
                 shape = RectangleShape
             )
-            .padding(4.dp)
+            .padding(2.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = { onClicked(dateItem) },
