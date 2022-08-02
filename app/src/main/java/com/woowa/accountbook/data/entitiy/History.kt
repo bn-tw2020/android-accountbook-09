@@ -7,7 +7,7 @@ data class History(
     val year: Int,
     val month: Int,
     val day: Int,
-    val category: Category,
+    val category: Category?,
     val payment: Payment,
     var isChecked: Boolean = false
 )
