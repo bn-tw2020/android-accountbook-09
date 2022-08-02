@@ -71,6 +71,47 @@ fun YearAndMonthPicker(
 }
 
 @Composable
+fun YearAndMonthAndDayPicker(
+    year: Int,
+    month: Int,
+    day: Int,
+    maxDate: Int,
+    onClicked: (Int, Int, Int) -> Unit
+) {
+    Column(
+        modifier = Modifier.padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var selectedYear = year
+        var selectedMonth = month
+        var selectedDay = day
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            DateNumberPicker(1000..9999, year, onCompleted = { selectedYear = it })
+            Spacer(modifier = Modifier.width(15.dp))
+            DateNumberPicker(1..12, month, onCompleted = { selectedMonth = it })
+            Spacer(modifier = Modifier.width(15.dp))
+            DateNumberPicker(1..maxDate, day, onCompleted = { selectedDay = it })
+        }
+        TextButton(
+            text = "완료",
+            textColor = White,
+            modifier = Modifier
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(14.dp),
+            onClicked = {
+                onClicked(selectedYear, selectedMonth, selectedDay)
+            },
+            isClick = true,
+            clickBackgroundColor = Yellow,
+            unClickBackgroundColor = Yellow
+        )
+    }
+}
+
+@Composable
 fun DateNumberPicker(
     intRange: IntRange,
     value: Int,
@@ -78,7 +119,7 @@ fun DateNumberPicker(
 ) {
     val pickerState = remember { mutableStateOf(value) }
     NumberPicker(
-        modifier = Modifier.width(200.dp),
+        modifier = Modifier.wrapContentWidth(),
         value = pickerState.value,
         onValueChange = {
             pickerState.value = it
