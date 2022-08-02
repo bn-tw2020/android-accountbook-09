@@ -82,6 +82,12 @@ fun StatisticsScreen(
             )
         }
     ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(LightPurple)
+        )
         if (histories.isEmpty()) {
             Text(
                 modifier = Modifier

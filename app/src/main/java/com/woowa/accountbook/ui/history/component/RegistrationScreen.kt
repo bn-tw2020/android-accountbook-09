@@ -1,7 +1,9 @@
 package com.woowa.accountbook.ui.history.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -16,10 +18,7 @@ import com.woowa.accountbook.ui.component.*
 import com.woowa.accountbook.ui.history.HistoryViewModel
 import com.woowa.accountbook.ui.iconpack.IconPack
 import com.woowa.accountbook.ui.iconpack.LeftArrow
-import com.woowa.accountbook.ui.theme.OffWhite
-import com.woowa.accountbook.ui.theme.Purple
-import com.woowa.accountbook.ui.theme.White
-import com.woowa.accountbook.ui.theme.Yellow
+import com.woowa.accountbook.ui.theme.*
 
 @Composable
 fun RegistrationScreen(
@@ -67,6 +66,12 @@ fun RegistrationScreen(
             )
         }
     ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(LightPurple)
+        )
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally

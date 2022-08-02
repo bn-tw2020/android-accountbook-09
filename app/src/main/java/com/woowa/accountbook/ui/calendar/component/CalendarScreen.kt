@@ -80,6 +80,12 @@ fun CalendarScreen(
             )
         }
     ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(LightPurple)
+        )
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {

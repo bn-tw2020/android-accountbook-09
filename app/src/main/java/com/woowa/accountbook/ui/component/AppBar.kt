@@ -34,6 +34,7 @@ fun AccountBookAppBar(
     TopAppBar(
         backgroundColor = backgroundColor,
         contentColor = contentColor,
+        elevation = 0.dp,
         title = {
             Text(
                 modifier = when (actionIcon) {
