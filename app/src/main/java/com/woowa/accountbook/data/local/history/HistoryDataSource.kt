@@ -10,7 +10,7 @@ interface HistoryDataSource {
     fun deleteById(list: List<Int>)
     fun save(
         money: Int,
-        categoryId: Int,
+        categoryId: Int?,
         content: String,
         year: Int,
         month: Int,

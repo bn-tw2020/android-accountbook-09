@@ -2,11 +2,15 @@ package com.woowa.accountbook.common
 
 import java.text.DecimalFormat
 
-fun rawToMoneyFormat(money: Int, isIncome: Int): String {
+fun rawToMoneyFormat(money: Int, isIncome: Int?): String {
     if (money == 0) return ""
-    val decimalFormat = DecimalFormat("#,###")
-    val result = decimalFormat.format(money)
+    val result = stringToMoneyFormat(money)
     return if (isIncome == 1) result else "-$result"
+}
+
+fun stringToMoneyFormat(money: Int): String {
+    val decimalFormat = DecimalFormat("#,###")
+    return decimalFormat.format(money)
 }
 
 fun rawToYearAndMonth(year: Int, month: Int): String {

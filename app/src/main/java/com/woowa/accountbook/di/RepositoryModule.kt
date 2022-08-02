@@ -21,8 +21,12 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideHistoryRepository(historyDataSource: HistoryDataSource): HistoryRepository {
-        return HistoryRepositoryImpl(historyDataSource)
+    fun provideHistoryRepository(
+        historyDataSource: HistoryDataSource,
+        categoryDataSource: CategoryDataSource,
+        paymentDataSource: PaymentDataSource
+    ): HistoryRepository {
+        return HistoryRepositoryImpl(historyDataSource, categoryDataSource, paymentDataSource)
     }
 
     @Provides

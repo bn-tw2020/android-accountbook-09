@@ -1,12 +1,16 @@
 package com.woowa.accountbook.data.repository
 
 import com.woowa.accountbook.data.entitiy.History
+import com.woowa.accountbook.data.local.category.CategoryDataSource
 import com.woowa.accountbook.data.local.history.HistoryDataSource
+import com.woowa.accountbook.data.local.payment.PaymentDataSource
 import com.woowa.accountbook.domain.repository.history.HistoryRepository
 import javax.inject.Inject
 
 class HistoryRepositoryImpl @Inject constructor(
-    private val historyDataSource: HistoryDataSource
+    private val historyDataSource: HistoryDataSource,
+    private val categoryDataSource: CategoryDataSource,
+    private val paymentDataSource: PaymentDataSource
 ) : HistoryRepository {
 
     override fun getHistories(): Result<List<History>> {
@@ -27,7 +31,7 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override fun saveHistory(
         money: Int,
-        categoryId: Int,
+        categoryId: Int?,
         content: String,
         year: Int,
         month: Int,
@@ -35,6 +39,10 @@ class HistoryRepositoryImpl @Inject constructor(
         paymentId: Int
     ) {
         runCatching {
+            if (categoryId != null) {
+                val category = categoryDataSource.findById(categoryId) ?: return
+            }
+            val payment = paymentDataSource.findById(paymentId) ?: return
             historyDataSource.save(
                 money,
                 categoryId,

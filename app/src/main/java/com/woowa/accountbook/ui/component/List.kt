@@ -99,9 +99,13 @@ fun HistoryItem(
             BothSideText(
                 leftText = {
                     LabelText(
-                        text = history.category.name,
+                        text = history.category?.name ?: "",
                         textStyle = MaterialTheme.typography.caption,
-                        color = Color(android.graphics.Color.parseColor(history.category.color))
+                        color = if (history.category?.color == null) OffWhite else Color(
+                            android.graphics.Color.parseColor(
+                                history.category.color
+                            )
+                        )
                     )
                 },
                 rightText = {
@@ -122,9 +126,9 @@ fun HistoryItem(
                 },
                 rightText = {
                     Text(
-                        text = "${rawToMoneyFormat(history.money, history.category.isIncome)}원",
+                        text = "${rawToMoneyFormat(history.money, history.category?.isIncome)}원",
                         style = MaterialTheme.typography.subtitle2,
-                        color = if (history.category.isIncome == 1) Green3 else Red
+                        color = if (history.category?.isIncome == 1) Green3 else Red
                     )
                 }
             )
