@@ -39,7 +39,7 @@ fun LabelText(
         Modifier
             .clip(RoundedCornerShape(50.dp))
             .background(color)
-            .width(58.dp)
+            .width(65.dp)
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Text(

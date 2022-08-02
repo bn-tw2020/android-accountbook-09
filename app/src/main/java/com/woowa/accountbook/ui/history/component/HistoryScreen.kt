@@ -98,22 +98,25 @@ fun HistoryScreen(
                     },
                     actionIcon = IconPack.Trash,
                     actionIconColor = Red,
-                    onActionClicked = {}
+                    onActionClicked = {
+                        historyViewModel.removeHistory()
+                        editMode.value = !editMode.value
+                    }
                 )
             }
         }
     ) {
+        val totalHistory = historyViewModel.totalHistory.collectAsState().value
         val histories = historyViewModel.history.collectAsState().value
-        val totalViewModel = historyViewModel.totalHistory.collectAsState().value
 
         if (inComeIsChecked.value && !expenseIsChecked.value) historyViewModel.getIncomeHistory()
         else if (!inComeIsChecked.value && expenseIsChecked.value) historyViewModel.getExpenseHistory()
 
         val groupHistory = histories.groupBy { it.day }
         val monthTotalIncome =
-            totalViewModel.filter { it.category?.isIncome == 1 }.sumOf { it.money }
+            totalHistory.filter { it.category?.isIncome == 1 }.sumOf { it.money }
         val monthTotalExpense =
-            totalViewModel.filter { it.category?.isIncome == 0 }.sumOf { it.money }
+            totalHistory.filter { it.category?.isIncome == 0 }.sumOf { it.money }
 
         Column(modifier = Modifier.fillMaxSize()) {
             FilterCheckBoxButton(
@@ -150,10 +153,7 @@ fun HistoryScreen(
                         if (!editMode.value) historyViewModel.resetCheckedHistory()
                     },
                     onCheckedItem = { isChecked, id ->
-                        historyViewModel.setCheckedItem(
-                            isChecked,
-                            id
-                        )
+                        historyViewModel.setCheckedItem(isChecked, id)
                     }
                 )
             }
