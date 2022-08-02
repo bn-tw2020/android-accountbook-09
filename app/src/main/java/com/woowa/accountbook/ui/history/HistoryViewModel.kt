@@ -24,6 +24,9 @@ class HistoryViewModel @Inject constructor(
     private val _history = MutableStateFlow<List<History>>(emptyList())
     val history: StateFlow<List<History>> get() = _history
 
+    private val _currentHistory = MutableStateFlow<History?>(null)
+    val currentHistory: StateFlow<History?> get() = _currentHistory
+
     private val _payments = MutableStateFlow<List<Payment>>(emptyList())
     val payments: StateFlow<List<Payment>> get() = _payments
 
@@ -31,18 +34,6 @@ class HistoryViewModel @Inject constructor(
     val categories: StateFlow<List<Category>> get() = _categories
 
     init {
-        savePayment("현대카드")
-        savePayment("카카오뱅크 체크카드")
-        saveCategory("교통", "#94D3CC", false)
-        saveCategory("문화/여가", "#D092E2", false)
-        saveCategory("미분류", "#817DCE", false)
-        saveCategory("생활", "#4A6CC3", false)
-        saveCategory("쇼핑/뷰티", "#4CB8B8", false)
-        saveCategory("식비", "#4CA1DE", false)
-        saveCategory("의료/건강", "#6ED5EB", false)
-        saveCategory("월급", "#9BD182", true)
-        saveCategory("용돈", "#EDCF65", true)
-        saveCategory("기타", "#E29C4D", true)
         getPayments()
     }
 
@@ -53,6 +44,12 @@ class HistoryViewModel @Inject constructor(
 
     fun getHistory() {
         _history.value = totalHistory.value
+    }
+
+    fun getHistory(id: Int) {
+        _currentHistory.value = null
+        if (id == -1) return
+        _currentHistory.value = historyRepository.getHistory(id).getOrThrow()
     }
 
     fun getIncomeHistory() {
@@ -94,12 +91,17 @@ class HistoryViewModel @Inject constructor(
         historyRepository.saveHistory(money, categoryId, content, year, month, day, paymentId)
     }
 
-    private fun saveCategory(name: String, color: String, isIncome: Boolean) {
-        categoryRepository.saveCategory(name, color, isIncome)
-    }
-
-    private fun savePayment(name: String) {
-        paymentRepository.savePayment(name)
+    fun updateHistory(
+        id: Int,
+        money: Int,
+        categoryId: Int?,
+        content: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        paymentId: Int
+    ) {
+        historyRepository.updateHistory(id, money, categoryId, content, year, month, day, paymentId)
     }
 
     private fun getPayments() {

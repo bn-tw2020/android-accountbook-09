@@ -44,7 +44,8 @@ fun StatisticsScreen(
     val (year, month) = calendarViewModel.yearMonthPair.value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
-    val groupBy = histories.groupBy { Pair(it.category?.name ?: "", it.category?.color ?: "#F7F6F3") }
+    val groupBy =
+        histories.groupBy { Pair(it.category?.name ?: "", it.category?.color ?: "#F7F6F3") }
     val totalExpense = histories.sumOf { it.money }
 
     Scaffold(

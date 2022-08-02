@@ -69,9 +69,9 @@ class AccountBookState(
         }
     }
 
-    fun navigateToRegistration(route: String) {
+    fun navigateToRegistration(route: String, id: Int = -1) {
         if (route != currentRoute) {
-            navController.navigate(route)
+            navController.navigate("${route}/${id}")
         }
     }
 }

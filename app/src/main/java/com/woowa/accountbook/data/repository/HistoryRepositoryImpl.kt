@@ -13,6 +13,10 @@ class HistoryRepositoryImpl @Inject constructor(
     private val paymentDataSource: PaymentDataSource
 ) : HistoryRepository {
 
+    override fun getHistory(id: Int): Result<History?> {
+        return runCatching { historyDataSource.findById(id) }
+    }
+
     override fun getHistories(): Result<List<History>> {
         return runCatching { historyDataSource.findByAll() }
     }
@@ -27,6 +31,30 @@ class HistoryRepositoryImpl @Inject constructor(
 
     override fun removeHistories(list: List<Int>) {
         runCatching { historyDataSource.deleteById(list) }
+    }
+
+    override fun updateHistory(
+        id: Int,
+        money: Int,
+        categoryId: Int?,
+        content: String,
+        year: Int,
+        month: Int,
+        day: Int,
+        paymentId: Int
+    ) {
+        runCatching {
+            historyDataSource.update(
+                id,
+                money,
+                categoryId,
+                content,
+                year,
+                month,
+                day,
+                paymentId
+            )
+        }
     }
 
     override fun saveHistory(

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowa.accountbook.common.NOW_DAY
+import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.ui.calendar.CalendarViewModel
 import com.woowa.accountbook.ui.component.*
 import com.woowa.accountbook.ui.history.HistoryViewModel
@@ -22,18 +23,30 @@ import com.woowa.accountbook.ui.theme.Yellow
 
 @Composable
 fun RegistrationScreen(
+    id: Int,
     historyViewModel: HistoryViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     navigationUp: () -> Unit = {}
 ) {
-    val inComeIsChecked = rememberSaveable { mutableStateOf(true) }
-    val expenseIsChecked = rememberSaveable { mutableStateOf(false) }
-    val price = rememberSaveable { mutableStateOf("") }
-    val payment = rememberSaveable { mutableStateOf("선택하세요") }
-    val paymentId = rememberSaveable { mutableStateOf<Int?>(null) }
-    val content = rememberSaveable { mutableStateOf("") }
-    val category = rememberSaveable { mutableStateOf("선택하세요") }
-    val categoryId = rememberSaveable { mutableStateOf<Int?>(null) }
+    val updateMode = -1
+    historyViewModel.getHistory(id)
+    val history = historyViewModel.currentHistory.collectAsState().value
+    var isIncome = history?.category?.isIncome == 1
+    var isExpense = history?.category?.isIncome == 0
+    if (id == updateMode) {
+        isIncome = true
+        isExpense = false
+    }
+
+    val inComeIsChecked = rememberSaveable { mutableStateOf(isIncome) }
+    val expenseIsChecked = rememberSaveable { mutableStateOf(isExpense) }
+
+    val price = rememberSaveable { mutableStateOf(history?.money?.toString() ?: "") }
+    val payment = rememberSaveable { mutableStateOf(history?.payment?.name ?: "선택하세요") }
+    val paymentId = rememberSaveable { mutableStateOf(history?.payment?.id) }
+    val content = rememberSaveable { mutableStateOf(history?.content ?: "") }
+    val category = rememberSaveable { mutableStateOf(history?.category?.name ?: "선택하세요") }
+    val categoryId = rememberSaveable { mutableStateOf(history?.category?.id) }
     val (year, month) = calendarViewModel.yearMonthPair.value
     val paymentList = historyViewModel.payments.collectAsState().value
     val categoryList = historyViewModel.categories.collectAsState().value
@@ -48,7 +61,7 @@ fun RegistrationScreen(
         backgroundColor = OffWhite,
         topBar = {
             AccountBookAppBar(
-                title = "내역 등록",
+                title = if (id == updateMode) "내역 등록" else "내역 수정",
                 navigationIcon = IconPack.LeftArrow,
                 onNavigationClicked = { navigationUp() }
             )
@@ -60,12 +73,15 @@ fun RegistrationScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             FilterButton(
+                history,
                 inComeIsChecked,
                 expenseIsChecked,
                 price,
                 payment,
+                paymentId,
                 content,
                 category,
+                categoryId,
                 selectedYear,
                 year,
                 selectedMonth,
@@ -149,21 +165,38 @@ fun RegistrationScreen(
                 InputContentText(content.value, onChanged = { content.value = it })
             }
             saveButton(
-                text = "등록하기",
+                text = if (id == updateMode) "등록하기" else "수정하기",
                 onClicked = {
-                    historyViewModel.saveHistory(
-                        money = price.value.toInt(),
-                        categoryId = if (expenseIsChecked.value) {
-                            if (categoryId.value == null) historyViewModel.getDefaultCategory() else categoryId.value
-                        } else {
-                            categoryId.value
-                        },
-                        content = content.value,
-                        year = selectedYear.value,
-                        month = selectedMonth.value,
-                        day = selectedDate.value,
-                        paymentId = paymentId.value!!
-                    )
+                    if (id == updateMode) {
+                        historyViewModel.saveHistory(
+                            money = price.value.toInt(),
+                            categoryId = if (expenseIsChecked.value) {
+                                if (categoryId.value == null) historyViewModel.getDefaultCategory() else categoryId.value
+                            } else {
+                                categoryId.value
+                            },
+                            content = content.value,
+                            year = selectedYear.value,
+                            month = selectedMonth.value,
+                            day = selectedDate.value,
+                            paymentId = paymentId.value!!
+                        )
+                    } else {
+                        historyViewModel.updateHistory(
+                            id = id,
+                            money = price.value.toInt(),
+                            categoryId = if (expenseIsChecked.value) {
+                                if (categoryId.value == null) historyViewModel.getDefaultCategory() else categoryId.value
+                            } else {
+                                categoryId.value
+                            },
+                            content = content.value,
+                            year = selectedYear.value,
+                            month = selectedMonth.value,
+                            day = selectedDate.value,
+                            paymentId = paymentId.value!!
+                        )
+                    }
                     navigationUp()
                 },
                 price = price.value,
@@ -207,12 +240,15 @@ private fun saveButton(
 
 @Composable
 private fun FilterButton(
+    history: History?,
     inComeIsChecked: MutableState<Boolean>,
     expenseIsChecked: MutableState<Boolean>,
     price: MutableState<String>,
     payment: MutableState<String>,
+    paymentId: MutableState<Int?>,
     content: MutableState<String>,
     category: MutableState<String>,
+    categoryId: MutableState<Int?>,
     selectedYear: MutableState<Int>,
     year: Int,
     selectedMonth: MutableState<Int>,
@@ -226,10 +262,12 @@ private fun FilterButton(
             onClicked = {
                 inComeIsChecked.value = true
                 expenseIsChecked.value = false
-                price.value = ""
+                price.value = history?.money?.toString() ?: ""
                 payment.value = "선택하세요"
-                content.value = ""
+                content.value = history?.content ?: ""
                 category.value = "선택하세요"
+                categoryId.value = null
+                paymentId.value = null
                 selectedYear.value = year
                 selectedMonth.value = month
                 selectedDate.value = NOW_DAY
@@ -248,10 +286,12 @@ private fun FilterButton(
             onClicked = {
                 inComeIsChecked.value = false
                 expenseIsChecked.value = true
-                price.value = ""
+                price.value = history?.money?.toString() ?: ""
                 payment.value = "선택하세요"
-                content.value = ""
+                content.value = history?.content ?: ""
                 category.value = "선택하세요"
+                categoryId.value = null
+                paymentId.value = null
                 selectedYear.value = year
                 selectedMonth.value = month
                 selectedDate.value = NOW_DAY
