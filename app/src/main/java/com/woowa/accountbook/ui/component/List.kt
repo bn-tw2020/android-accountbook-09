@@ -1,5 +1,6 @@
 package com.woowa.accountbook.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
@@ -21,8 +22,8 @@ import com.woowa.accountbook.ui.theme.*
 fun HistoryItemTitle(
     textColor: Color,
     title: String,
-    income: String,
-    expense: String
+    income: String? = null,
+    expense: String? = null
 ) {
     Spacer(modifier = Modifier.height(24.dp))
     Row(
@@ -38,34 +39,84 @@ fun HistoryItemTitle(
             color = textColor
         )
 
-        Row {
-            Text(
-                text = "수입",
-                style = MaterialTheme.typography.caption,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = income,
-                style = MaterialTheme.typography.caption,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = "지출",
-                style = MaterialTheme.typography.caption,
-                color = textColor
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = expense,
-                style = MaterialTheme.typography.caption,
-                color = textColor
-            )
+        if (income != null && expense != null) {
+            Row {
+                Text(
+                    text = "수입",
+                    style = MaterialTheme.typography.caption,
+                    color = textColor
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = income,
+                    style = MaterialTheme.typography.caption,
+                    color = textColor
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "지출",
+                    style = MaterialTheme.typography.caption,
+                    color = textColor
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = expense,
+                    style = MaterialTheme.typography.caption,
+                    color = textColor
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(8.dp))
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun SettingItem(
+    category: Category? = null,
+    payment: Payment? = null,
+    isEdit: Boolean,
+    onClicked: (Int?) -> Unit = {},
+    onLongClicked: (Boolean, Int?) -> Unit = { _, _ -> },
+    onCheckedItem: (Boolean, Int?) -> Unit = { _, _ -> },
+    content: @Composable () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier
+            .combinedClickable(
+                onClick = {
+                    if (!isEdit) {
+                        if (category != null) onClicked(category.id)
+                        if (payment != null) onClicked(payment.id)
+                    }
+                },
+                onLongClick = {
+                    if (category != null) onLongClicked(isEdit, category.id)
+                    if (payment != null) onLongClicked(isEdit, payment.id)
+                }
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (isEdit) {
+            Spacer(modifier = Modifier.width(16.dp))
+            AccountBookCheckBox(
+                checked = category?.isChecked ?: (payment?.isChecked ?: false),
+                onCheckedChange = {
+                    if (category != null) onCheckedItem(it, category.id)
+                    if (payment != null) onCheckedItem(it, payment.id)
+                },
+                checkedColor = Red,
+                uncheckedColor = Purple,
+                checkmarkColor = White
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        Column {
+            content()
+        }
+    }
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

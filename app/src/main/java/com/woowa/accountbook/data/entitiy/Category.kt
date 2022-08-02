@@ -4,5 +4,6 @@ data class Category(
     val id: Int?,
     val isIncome: Int?,
     val name: String?,
-    val color: String?
+    val color: String?,
+    var isChecked: Boolean = false
 )
