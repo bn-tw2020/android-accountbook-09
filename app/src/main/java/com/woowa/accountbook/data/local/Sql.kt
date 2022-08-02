@@ -20,7 +20,7 @@ internal val createAccountBookQuery = """
             CREATE TABLE ${DatabaseHelper.TABLE_ACCOUNT_BOOK} (
                 ${DatabaseHelper.ACCOUNT_BOOK_COL_ID} INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                 ${DatabaseHelper.ACCOUNT_BOOK_COL_MONEY} INTEGER NOT NULL,
-                ${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} INTEGER NOT NULL,
+                ${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} INTEGER,
                 ${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} INTEGER NOT NULL, 
                 ${DatabaseHelper.ACCOUNT_BOOK_COL_CONTENT} TEXT,
                 ${DatabaseHelper.ACCOUNT_BOOK_COL_YEAR} INTEGER NOT NULL,

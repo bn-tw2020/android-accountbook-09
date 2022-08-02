@@ -73,10 +73,10 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
                     )
                 } else {
                     val income = dayList
-                        .filter { it.category.isIncome == 1 }
+                        .filter { it.category?.isIncome == 1 }
                         .sumOf { it.money }
                     val expense = dayList
-                        .filter { it.category.isIncome == 0 }
+                        .filter { it.category?.isIncome == 0 }
                         .sumOf { it.money }
 
                     dateItems.add(
@@ -97,5 +97,13 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
 
     fun isToday(dateItem: DateItem): Boolean {
         return dateItem.year == NOW_YEAR && dateItem.month == NOW_MONTH && dateItem.date == NOW_DAY
+    }
+
+    fun getDayOfWeek(year: Int, month: Int, date: Int): String {
+        return calendar.getDayOfWeek(year, month, date)
+    }
+
+    fun getMaxDate(year: Int, month: Int, date: Int): Int {
+        return calendar.getMaxDate(year, month, date)
     }
 }

@@ -44,7 +44,7 @@ fun StatisticsScreen(
     val (year, month) = calendarViewModel.yearMonthPair.value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
-    val groupBy = histories.groupBy { Pair(it.category.name, it.category.color) }
+    val groupBy = histories.groupBy { Pair(it.category?.name, it.category?.color) }
     val totalExpense = histories.sumOf { it.money }
 
     Scaffold(
@@ -103,8 +103,8 @@ fun StatisticsScreen(
 @Composable
 private fun ExpenseCategory(
     totalExpense: Int,
-    groupBy: Map<Pair<String, String>, List<History>>,
-    expenseCategoryList: List<Pair<Pair<String, String>, Int>>
+    groupBy: Map<Pair<String?, String?>, List<History>>,
+    expenseCategoryList: List<Pair<Pair<String?, String?>, Int>>
 ) {
     Column {
         BothSideText(
@@ -137,7 +137,7 @@ private fun ExpenseCategory(
 
 @Composable
 private fun GraphLegend(
-    expenseCategoryList: List<Pair<Pair<String, String>, Int>>,
+    expenseCategoryList: List<Pair<Pair<String?, String?>, Int>>,
     totalExpense: Int
 ) {
     LazyColumn(
@@ -154,7 +154,7 @@ private fun GraphLegend(
             ) {
                 Row {
                     LabelText(
-                        text = category.first.first,
+                        text = category.first.first!!,
                         textStyle = MaterialTheme.typography.caption,
                         color = Color(android.graphics.Color.parseColor(category.first.second))
                     )
@@ -187,7 +187,7 @@ private fun GraphLegend(
 
 @Composable
 private fun ExpenseGraph(
-    groupBy: Map<Pair<String, String>, List<History>>,
+    groupBy: Map<Pair<String?, String?>, List<History>>,
     totalExpense: Int,
 ) {
     AndroidView(

@@ -118,7 +118,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
         addHomeGraph(historyViewModel, calendarViewModel)
     }
     composable(route = Destinations.REGISTRATION) {
-        RegistrationScreen()
+        RegistrationScreen(historyViewModel, calendarViewModel, navigationUp = navigationUp)
     }
     composable(route = Destinations.STATISTICS_DETAIL) {
         StatisticsDetailScreen()

@@ -93,12 +93,12 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(16.dp))
             val totalViewModel = historyViewModel.totalHistory.collectAsState().value
             val monthTotalIncome =
-                totalViewModel.filter { it.category.isIncome == 1 }.sumOf { it.money }
+                totalViewModel.filter { it.category?.isIncome == 1 }.sumOf { it.money }
             val monthTotalExpense =
-                totalViewModel.filter { it.category.isIncome == 0 }.sumOf { it.money }
+                totalViewModel.filter { it.category?.isIncome == 0 }.sumOf { it.money }
             val totalIncome = rawToMoneyFormat(monthTotalIncome, 1)
             val totalExpense = rawToMoneyFormat(monthTotalExpense, 0)
-            val total = rawToMoneyFormat(monthTotalExpense + (-monthTotalIncome), 1)
+            val total = rawToMoneyFormat(monthTotalIncome - monthTotalExpense, 1)
             MonthIncomeAndExpense(totalIncome, totalExpense, total)
         }
     }

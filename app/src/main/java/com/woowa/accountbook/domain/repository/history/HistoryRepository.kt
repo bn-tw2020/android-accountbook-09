@@ -9,7 +9,7 @@ interface HistoryRepository {
     fun removeHistories(list: List<Int>)
     fun saveHistory(
         money: Int,
-        categoryId: Int,
+        categoryId: Int?,
         content: String,
         year: Int,
         month: Int,
