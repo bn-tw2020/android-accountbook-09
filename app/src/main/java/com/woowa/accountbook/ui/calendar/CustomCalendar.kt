@@ -12,9 +12,9 @@ class CustomCalendar {
     val currentYearAndMonth = "${NOW_YEAR}년 ${NOW_MONTH}월"
     var yearMonthPair = Pair(NOW_YEAR, NOW_MONTH)
 
-    var currentMaxDate = 0
+    private var currentMaxDate = 0
     private var previousMonthOffset = 0
-    var nextMonthOffset = 0
+    private var nextMonthOffset = 0
 
     private val _dateList = mutableListOf<Pair<Int, Int>>()
     val dateList: List<Pair<Int, Int>> get() = _dateList
@@ -96,6 +96,31 @@ class CustomCalendar {
     private fun getCurrentMonthDate(calendar: Calendar) {
         repeat(calendar.getActualMaximum(Calendar.DATE)) {
             _dateList.add(0 to it + 1)
+        }
+    }
+
+    fun getMaxDate(year: Int, month: Int, date: Int): Int {
+        return Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month - 1)
+            set(Calendar.DATE, date)
+        }.getActualMaximum(Calendar.DATE)
+    }
+
+    fun getDayOfWeek(year: Int, month: Int, date: Int): String {
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.YEAR, year)
+            set(Calendar.MONTH, month - 1)
+            set(Calendar.DATE, date)
+        }
+        return when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            1 -> "일요일"
+            2 -> "월요일"
+            3 -> "화요일"
+            4 -> "수요일"
+            5 -> "목요일"
+            6 -> "금요일"
+            else -> "토요일"
         }
     }
 }

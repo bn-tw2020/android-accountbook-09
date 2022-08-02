@@ -10,7 +10,7 @@ class PaymentRepositoryImpl @Inject constructor(
 ) : PaymentRepository {
 
     override fun getPayments(): Result<List<Payment>> {
-        TODO("Not yet implemented")
+        return runCatching { paymentDataSource.findAll() }
     }
 
     override fun removePayments(list: List<Int>) {
@@ -18,6 +18,10 @@ class PaymentRepositoryImpl @Inject constructor(
     }
 
     override fun savePayment(name: String) {
-        TODO("Not yet implemented")
+        runCatching {
+            val payment = paymentDataSource.findByName(name)
+            if (payment == null)
+                paymentDataSource.save(name)
+        }
     }
 }

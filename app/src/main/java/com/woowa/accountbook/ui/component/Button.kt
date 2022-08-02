@@ -75,8 +75,8 @@ fun LeftCornerCheckButton(
     disabledColor: Color,
     uncheckedColor: Color,
     checkmarkColor: Color,
-    labelText: String,
-    labelPriceText: String,
+    labelText: String = "",
+    labelPriceText: String = "",
 ) {
     AccountBookButton(
         modifier = Modifier
@@ -128,8 +128,8 @@ fun RightCornerCheckButton(
     disabledColor: Color,
     uncheckedColor: Color,
     checkmarkColor: Color,
-    labelText: String,
-    labelPriceText: String
+    labelText: String = "",
+    labelPriceText: String = ""
 ) {
     AccountBookButton(
         modifier = Modifier
@@ -172,6 +172,7 @@ fun RightCornerCheckButton(
 
 @Composable
 fun FilterCheckBoxButton(
+    checkbox: Boolean = true,
     totalIncome: Int,
     totalExpense: Int,
     inComeIsChecked: MutableState<Boolean>,
@@ -194,7 +195,7 @@ fun FilterCheckBoxButton(
     ) {
         LeftCornerCheckButton(
             enabled = enabled,
-            checkBox = true,
+            checkBox = checkbox,
             checked = inComeIsChecked.value,
             onClicked = {
                 onIncomeButtonClicked()
@@ -228,7 +229,7 @@ fun FilterCheckBoxButton(
 
         RightCornerCheckButton(
             enabled = enabled,
-            checkBox = true,
+            checkBox = checkbox,
             checked = expenseIsChecked.value,
             onClicked = {
                 onExpenseButtonClicked()
@@ -293,7 +294,7 @@ fun TextButton(
     }
 }
 
-private fun onClickFilterButton(
+fun onClickFilterButton(
     inComeIsChecked: MutableState<Boolean>,
     expenseIsChecked: MutableState<Boolean>,
     onBothClicked: () -> Unit,

@@ -39,6 +39,14 @@ fun HistoryScreen(
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.value
     historyViewModel.initHistory(month)
+    onClickFilterButton(
+        inComeIsChecked,
+        expenseIsChecked,
+        onIncomeClicked = { historyViewModel.getIncomeHistory() },
+        onExpenseClicked = { historyViewModel.getExpenseHistory() },
+        onBothClicked = { historyViewModel.getHistory() },
+        onEmptyClicked = { historyViewModel.getEmptyHistory() }
+    )
 
     Scaffold(
         backgroundColor = OffWhite,
@@ -103,9 +111,9 @@ fun HistoryScreen(
 
         val groupHistory = histories.groupBy { it.day }
         val monthTotalIncome =
-            totalViewModel.filter { it.category.isIncome == 1 }.sumOf { it.money }
+            totalViewModel.filter { it.category?.isIncome == 1 }.sumOf { it.money }
         val monthTotalExpense =
-            totalViewModel.filter { it.category.isIncome == 0 }.sumOf { it.money }
+            totalViewModel.filter { it.category?.isIncome == 0 }.sumOf { it.money }
 
         Column(modifier = Modifier.fillMaxSize()) {
             FilterCheckBoxButton(
@@ -163,9 +171,9 @@ private fun HistoryLazyColumn(
     LazyColumn {
         for (history in groupHistory) {
             val income =
-                history.value.filter { it.category.isIncome == 1 }.sumOf { it.money }
+                history.value.filter { it.category?.isIncome == 1 }.sumOf { it.money }
             val expense =
-                history.value.filter { it.category.isIncome == 0 }.sumOf { it.money }
+                history.value.filter { it.category?.isIncome == 0 }.sumOf { it.money }
             item {
                 HistoryItemTitle(
                     textColor = LightPurple,

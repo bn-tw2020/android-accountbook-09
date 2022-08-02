@@ -44,7 +44,7 @@ fun StatisticsScreen(
     val (year, month) = calendarViewModel.yearMonthPair.value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
-    val groupBy = histories.groupBy { Pair(it.category.name, it.category.color) }
+    val groupBy = histories.groupBy { Pair(it.category?.name ?: "", it.category?.color ?: "#F7F6F3") }
     val totalExpense = histories.sumOf { it.money }
 
     Scaffold(
@@ -193,7 +193,7 @@ private fun ExpenseGraph(
     AndroidView(
         modifier = Modifier
             .fillMaxWidth()
-            .height(500.dp),
+            .height(300.dp),
         factory = { context ->
 
             val pieChart = PieChart(context)

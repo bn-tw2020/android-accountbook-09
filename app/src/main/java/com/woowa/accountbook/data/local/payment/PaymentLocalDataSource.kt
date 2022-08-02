@@ -9,6 +9,38 @@ class PaymentLocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
 ) : PaymentDataSource {
 
+    override fun findById(id: Int): Payment? {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(id.toString()))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    Payment(
+                        id = it.getInt(0),
+                        name = it.getString(1)
+                    )
+                } else null
+            }
+        }
+    }
+
+    override fun findByName(name: String): Payment? {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_NAME} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(name))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    Payment(
+                        id = it.getInt(0),
+                        name = it.getString(1)
+                    )
+                } else null
+            }
+        }
+    }
+
     override fun findAll(): List<Payment> {
         val paymentList = mutableListOf<Payment>()
         databaseHelper.readableDatabase.use { database ->

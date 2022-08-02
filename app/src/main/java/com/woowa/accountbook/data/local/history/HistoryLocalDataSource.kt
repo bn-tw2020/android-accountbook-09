@@ -41,7 +41,7 @@ class HistoryLocalDataSource @Inject constructor(
                         day = day,
                         Category(
                             id = categoryIdPK,
-                            isIncome = isIncome,
+                            isIncome = if (categoryIdPK == 0) 1 else isIncome,
                             name = categoryName,
                             color = color
                         ),
@@ -61,7 +61,7 @@ class HistoryLocalDataSource @Inject constructor(
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->
             val sql =
-                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = $month ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_DAY} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
+                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = $month ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_DAY} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
             val cursor = database.rawQuery(sql, null)
             return cursor.use {
                 while (it.moveToNext()) {
@@ -77,7 +77,6 @@ class HistoryLocalDataSource @Inject constructor(
                     val color = it.getString(11)
                     val paymentIdPK = it.getInt(12)
                     val paymentName = it.getString(13)
-
                     val history = History(
                         id = id,
                         money = money,
@@ -87,7 +86,7 @@ class HistoryLocalDataSource @Inject constructor(
                         day = day,
                         Category(
                             id = categoryIdPK,
-                            isIncome = isIncome,
+                            isIncome = if (categoryIdPK == 0) 1 else isIncome,
                             name = categoryName,
                             color = color
                         ),
@@ -134,7 +133,7 @@ class HistoryLocalDataSource @Inject constructor(
                         day = day,
                         Category(
                             id = categoryIdPK,
-                            isIncome = isIncome,
+                            isIncome = if (categoryIdPK == 0) 1 else isIncome,
                             name = categoryName,
                             color = color
                         ),
@@ -160,7 +159,7 @@ class HistoryLocalDataSource @Inject constructor(
 
     override fun save(
         money: Int,
-        categoryId: Int,
+        categoryId: Int?,
         content: String,
         year: Int,
         month: Int,

@@ -9,6 +9,42 @@ class CategoryLocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
 ) : CategoryDataSource {
 
+    override fun findById(id: Int): Category? {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_ID} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(id.toString()))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    Category(
+                        id = it.getInt(0),
+                        isIncome = it.getInt(1),
+                        name = it.getString(2),
+                        color = it.getString(3)
+                    )
+                } else null
+            }
+        }
+    }
+
+    override fun findByName(name: String): Category? {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_NAME} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(name))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    Category(
+                        id = it.getInt(0),
+                        isIncome = it.getInt(1),
+                        name = it.getString(2),
+                        color = it.getString(3)
+                    )
+                } else null
+            }
+        }
+    }
+
     override fun findByType(type: String): List<Category> {
         val categoryList = mutableListOf<Category>()
         databaseHelper.readableDatabase.use { database ->

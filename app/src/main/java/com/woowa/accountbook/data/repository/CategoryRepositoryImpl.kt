@@ -10,7 +10,7 @@ class CategoryRepositoryImpl @Inject constructor(
 ) : CategoryRepository {
 
     override fun getCategoriesByType(type: String): Result<List<Category>> {
-        TODO("Not yet implemented")
+        return runCatching { categoryDataSource.findByType(type) }
     }
 
     override fun removeCategories(list: List<Int>) {
@@ -18,7 +18,11 @@ class CategoryRepositoryImpl @Inject constructor(
     }
 
     override fun saveCategory(name: String, color: String, isIncome: Boolean) {
-        TODO("Not yet implemented")
+        runCatching {
+            val category = categoryDataSource.findByName(name)
+            if (category == null)
+                categoryDataSource.save(name, color, isIncome)
+        }
     }
 
 }
