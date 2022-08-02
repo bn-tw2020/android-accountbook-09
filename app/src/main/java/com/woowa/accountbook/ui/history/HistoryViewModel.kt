@@ -74,6 +74,14 @@ class HistoryViewModel @Inject constructor(
         _history.value = result
     }
 
+    fun removeHistory() {
+        val selectedHistory = _history.value
+            .filter { it.isChecked }
+            .map { it.id }
+        _history.value = _history.value.filter { !it.isChecked }
+        historyRepository.removeHistories(selectedHistory)
+    }
+
     fun saveHistory(
         money: Int,
         categoryId: Int?,
@@ -107,12 +115,15 @@ class HistoryViewModel @Inject constructor(
     fun getDefaultCategory(): Int? = categories.value.find { it.name == "미분류" }?.id
 
     fun resetCheckedHistory() {
-        _history.value = _history.value.map {
+        totalHistory.value = totalHistory.value.map {
             it.copy(isChecked = false)
         }
     }
 
     fun setCheckedItem(isChecked: Boolean, id: Int) {
+        totalHistory.value = totalHistory.value.map {
+            if (it.id == id) it.copy(isChecked = isChecked) else it
+        }
         _history.value = _history.value.map {
             if (it.id == id) it.copy(isChecked = isChecked) else it
         }
