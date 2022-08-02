@@ -72,6 +72,7 @@ fun HistoryItemTitle(
 fun HistoryItem(
     history: History,
     isEdit: Boolean,
+    onClicked: (Int) -> Unit,
     onLongClicked: (Boolean, Int) -> Unit,
     onCheckedItem: (Boolean, Int) -> Unit
 ) {
@@ -79,7 +80,7 @@ fun HistoryItem(
     Row(
         modifier = Modifier
             .combinedClickable(
-                onClick = {},
+                onClick = { if (!isEdit) onClicked(history.id) },
                 onLongClick = { onLongClicked(isEdit, history.id) }
             ),
         verticalAlignment = Alignment.CenterVertically
@@ -167,7 +168,8 @@ private fun HistoryItemDefaultPreview() {
         ),
         isEdit = false,
         onLongClicked = { _, _ -> },
-        onCheckedItem = { _, _ -> }
+        onCheckedItem = { _, _ -> },
+        onClicked = {}
     )
 }
 
@@ -196,6 +198,7 @@ private fun HistoryItemEditCheckedPreview() {
         ),
         isEdit = true,
         onLongClicked = { _, _ -> },
-        onCheckedItem = { _, _ -> }
+        onCheckedItem = { _, _ -> },
+        onClicked = {}
     )
 }

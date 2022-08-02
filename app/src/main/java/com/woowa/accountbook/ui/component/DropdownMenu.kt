@@ -117,7 +117,7 @@ fun InputDropDownMenu(
                         modifier = Modifier
                             .width(14.dp)
                             .height(14.dp),
-                                imageVector = IconPack . Plus,
+                        imageVector = IconPack.Plus,
                         contentDescription = null,
                         tint = Purple
                     )

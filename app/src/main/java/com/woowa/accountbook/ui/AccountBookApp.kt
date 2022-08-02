@@ -8,9 +8,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.woowa.accountbook.ui.calendar.CalendarViewModel
 import com.woowa.accountbook.ui.calendar.component.CalendarScreen
 import com.woowa.accountbook.ui.component.AccountBookFloatingButton
@@ -62,6 +64,9 @@ fun AccountBookApp() {
                 accountBookNavGraph(
                     navController = appState.navController,
                     navigationUp = { appState.navigateUp() },
+                    onClicked = { id ->
+                        appState.navigateToRegistration(Destinations.REGISTRATION, id)
+                    },
                     historyViewModel = historyViewModel,
                     calendarViewModel = calendarViewModel
                 )
@@ -107,6 +112,7 @@ fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
 
 private fun NavGraphBuilder.accountBookNavGraph(
     navController: NavController,
+    onClicked: (Int) -> Unit,
     navigationUp: () -> Unit,
     historyViewModel: HistoryViewModel,
     calendarViewModel: CalendarViewModel
@@ -115,10 +121,26 @@ private fun NavGraphBuilder.accountBookNavGraph(
         route = Destinations.HOME,
         startDestination = HomeSections.HISTORY.route
     ) {
-        addHomeGraph(historyViewModel, calendarViewModel)
+        addHomeGraph(
+            historyViewModel,
+            calendarViewModel,
+            onClicked = { id -> onClicked(id) })
     }
-    composable(route = Destinations.REGISTRATION) {
-        RegistrationScreen(historyViewModel, calendarViewModel, navigationUp = navigationUp)
+    composable(
+        route = "${Destinations.REGISTRATION}/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) { entry ->
+        val id = entry.arguments?.getInt("id") ?: -1
+        RegistrationScreen(
+            id,
+            historyViewModel,
+            calendarViewModel,
+            navigationUp = navigationUp
+        )
     }
     composable(route = Destinations.STATISTICS_DETAIL) {
         StatisticsDetailScreen()
@@ -127,10 +149,15 @@ private fun NavGraphBuilder.accountBookNavGraph(
 
 private fun NavGraphBuilder.addHomeGraph(
     historyViewModel: HistoryViewModel,
-    calendarViewModel: CalendarViewModel
+    calendarViewModel: CalendarViewModel,
+    onClicked: (Int) -> Unit
 ) {
     composable(HomeSections.HISTORY.route) {
-        HistoryScreen(historyViewModel, calendarViewModel)
+        HistoryScreen(
+            historyViewModel,
+            calendarViewModel,
+            onClicked = { id -> onClicked(id) }
+        )
     }
     composable(HomeSections.CALENDAR.route) {
         CalendarScreen(historyViewModel, calendarViewModel)

@@ -31,7 +31,8 @@ import com.woowa.accountbook.ui.theme.*
 @Composable
 fun HistoryScreen(
     historyViewModel: HistoryViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    onClicked: (Int) -> Unit = {}
 ) {
     val inComeIsChecked = rememberSaveable { mutableStateOf(true) }
     val expenseIsChecked = rememberSaveable { mutableStateOf(false) }
@@ -147,6 +148,7 @@ fun HistoryScreen(
                 HistoryLazyColumn(
                     groupHistory,
                     editMode.value,
+                    onClicked = { id -> onClicked(id) },
                     onLongClicked = { mode, id ->
                         editMode.value = !mode
                         historyViewModel.setCheckedItem(true, id)
@@ -165,6 +167,7 @@ fun HistoryScreen(
 private fun HistoryLazyColumn(
     groupHistory: Map<Int, List<History>>,
     editMode: Boolean,
+    onClicked: (Int) -> Unit,
     onLongClicked: (Boolean, Int) -> Unit,
     onCheckedItem: (Boolean, Int) -> Unit
 ) {
@@ -187,6 +190,7 @@ private fun HistoryLazyColumn(
                 HistoryItem(
                     item,
                     editMode,
+                    onClicked = { id -> onClicked(id) },
                     onLongClicked = { editMode, id -> onLongClicked(editMode, id) },
                     onCheckedItem = { isChecked, id -> onCheckedItem(isChecked, id) }
                 )
