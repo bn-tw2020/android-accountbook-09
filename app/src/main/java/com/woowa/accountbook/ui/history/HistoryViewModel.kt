@@ -104,7 +104,7 @@ class HistoryViewModel @Inject constructor(
         historyRepository.updateHistory(id, money, categoryId, content, year, month, day, paymentId)
     }
 
-    private fun getPayments() {
+    fun getPayments() {
         val paymentList = paymentRepository.getPayments().getOrThrow()
         _payments.value = paymentList
     }

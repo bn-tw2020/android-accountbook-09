@@ -1,5 +1,7 @@
 package com.woowa.accountbook.ui.settings
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.Payment
@@ -25,12 +27,6 @@ class SettingViewModel @Inject constructor(
     private val _expenseCategories = MutableStateFlow<List<Category>>(emptyList())
     val expenseCategories: StateFlow<List<Category>> get() = _expenseCategories
 
-    init {
-        getPayments()
-        getExpenseCategories()
-        getIncomeCategories()
-    }
-
     fun getPayments() {
         val paymentList = paymentRepository.getPayments().getOrThrow()
         _payments.value = paymentList
@@ -46,28 +42,37 @@ class SettingViewModel @Inject constructor(
         _expenseCategories.value = categoryList
     }
 
+    fun savePayment(name: String) {
+        paymentRepository.savePayment(name)
+    }
+
+    fun saveCategory(name: String, isIncome: Boolean, color: Color) {
+        val stringColor = String.format("#%06X", (0xFFFFFF and color.toArgb()))
+        categoryRepository.saveCategory(name, stringColor, isIncome)
+    }
+
     fun setCheckedItem(isChecked: Boolean, id: Int?, type: String) {
-        when(type) {
+        when (type) {
             "payment" -> {
                 _payments.value = _payments.value.map {
-                    if(it.id == id) it.copy(isChecked = isChecked) else it
+                    if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "expense" -> {
                 _expenseCategories.value = _expenseCategories.value.map {
-                    if(it.id == id) it.copy(isChecked = isChecked) else it
+                    if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "income" -> {
                 _incomeCategories.value = _incomeCategories.value.map {
-                    if(it.id == id) it.copy(isChecked = isChecked) else it
+                    if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
         }
     }
 
     fun resetCheckedItem(type: String) {
-        when(type) {
+        when (type) {
             "payment" -> {
                 _payments.value = _payments.value.map {
                     it.copy(isChecked = false)
@@ -87,7 +92,7 @@ class SettingViewModel @Inject constructor(
     }
 
     fun removeItem(type: String) {
-        when(type) {
+        when (type) {
             "payment" -> {
                 resetCheckedItem(type)
             }

@@ -27,8 +27,14 @@ import com.woowa.accountbook.ui.settings.SettingViewModel
 import com.woowa.accountbook.ui.theme.*
 
 @Composable
-fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
+fun SettingScreen(
+    settingViewModel: SettingViewModel = hiltViewModel(),
+    onSectionItemClicked: (Int?, String) -> Unit = { _, _ -> }
+) {
 
+    settingViewModel.getPayments()
+    settingViewModel.getExpenseCategories()
+    settingViewModel.getIncomeCategories()
     val paymentEditMode = remember { mutableStateOf(false) }
     val expenseEditMode = remember { mutableStateOf(false) }
     val incomeEditMode = remember { mutableStateOf(false) }
@@ -52,15 +58,13 @@ fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
                         "${incomeCategories.count { it.isChecked }}개 선택",
                     navigationIcon = IconPack.LeftArrow,
                     onNavigationClicked = {
-                        if(paymentEditMode.value) {
+                        if (paymentEditMode.value) {
                             paymentEditMode.value = !paymentEditMode.value
                             settingViewModel.resetCheckedItem("payment")
-                        }
-                        else if(expenseEditMode.value) {
+                        } else if (expenseEditMode.value) {
                             expenseEditMode.value = !expenseEditMode.value
                             settingViewModel.resetCheckedItem("expense")
-                        }
-                        else {
+                        } else {
                             incomeEditMode.value = !incomeEditMode.value
                             settingViewModel.resetCheckedItem("income")
                         }
@@ -68,15 +72,13 @@ fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
                     actionIcon = IconPack.Trash,
                     actionIconColor = Red,
                     onActionClicked = {
-                        if(paymentEditMode.value) {
+                        if (paymentEditMode.value) {
                             paymentEditMode.value = !paymentEditMode.value
                             settingViewModel.removeItem("payment")
-                        }
-                        else if(expenseEditMode.value) {
+                        } else if (expenseEditMode.value) {
                             expenseEditMode.value = !expenseEditMode.value
                             settingViewModel.removeItem("expense")
-                        }
-                        else {
+                        } else {
                             incomeEditMode.value = !incomeEditMode.value
                             settingViewModel.removeItem("income")
                         }
@@ -97,7 +99,7 @@ fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
                 title = "결제수단",
                 payments = payments,
                 editMode = paymentEditMode.value,
-                onClicked = {},
+                onClicked = { onSectionItemClicked(it, "payment") },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = !mode
                     expenseEditMode.value = false
@@ -115,7 +117,7 @@ fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
                 title = "지출 카테고리",
                 category = expenseCategories,
                 editMode = expenseEditMode.value,
-                onClicked = {},
+                onClicked = { onSectionItemClicked(it, "expense") },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = false
                     expenseEditMode.value = !mode
@@ -133,7 +135,7 @@ fun SettingScreen(settingViewModel: SettingViewModel = hiltViewModel()) {
                 title = "수입 카테고리",
                 category = incomeCategories,
                 editMode = incomeEditMode.value,
-                onClicked = {},
+                onClicked = { onSectionItemClicked(it, "income") },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = false
                     expenseEditMode.value = false
@@ -156,7 +158,7 @@ private fun LazyListScope.section(
     payments: List<Payment> = emptyList(),
     category: List<Category> = emptyList(),
     editMode: Boolean = false,
-    onClicked: () -> Unit = {},
+    onClicked: (Int?) -> Unit = {},
     onLongClicked: (Boolean, Int?) -> Unit = { _, _ -> },
     onCheckedItem: (Boolean, Int?) -> Unit = { _, _ -> },
 ) {
@@ -170,7 +172,7 @@ private fun LazyListScope.section(
                 SettingItem(
                     payment = item,
                     isEdit = editMode,
-                    onClicked = { },
+                    onClicked = { onClicked(it) },
                     onLongClicked = { editMode, id -> onLongClicked(editMode, id) },
                     onCheckedItem = { isChecked, id -> onCheckedItem(isChecked, id) }
                 ) {
@@ -193,7 +195,7 @@ private fun LazyListScope.section(
                 SettingItem(
                     category = item,
                     isEdit = editMode,
-                    onClicked = { },
+                    onClicked = { onClicked(it) },
                     onLongClicked = { editMode, id -> onLongClicked(editMode, id) },
                     onCheckedItem = { isChecked, id -> onCheckedItem(isChecked, id) }
                 ) {
@@ -223,7 +225,7 @@ private fun LazyListScope.section(
     }
     item {
         Divider(color = Purple40)
-        AddItemText()
+        AddItemText(onClicked = { onClicked(it) })
     }
     item {
         Spacer(
@@ -236,7 +238,9 @@ private fun LazyListScope.section(
 }
 
 @Composable
-fun AddItemText() {
+fun AddItemText(
+    onClicked: (Int?) -> Unit
+) {
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -248,7 +252,7 @@ fun AddItemText() {
             style = MaterialTheme.typography.subtitle2
         )
 
-        IconButton(onClick = {}) {
+        IconButton(onClick = { onClicked(-1) }) {
             Icon(imageVector = IconPack.Plus, contentDescription = "plus", tint = Purple)
         }
     }

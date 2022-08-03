@@ -19,7 +19,8 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun saveCategory(name: String, color: String, isIncome: Boolean) {
         runCatching {
-            val category = categoryDataSource.findByName(name)
+            val category =
+                categoryDataSource.findByNameAndIsIncome(name, if (isIncome) "1" else "0")
             if (category == null)
                 categoryDataSource.save(name, color, isIncome)
         }

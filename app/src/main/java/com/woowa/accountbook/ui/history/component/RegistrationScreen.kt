@@ -25,10 +25,13 @@ fun RegistrationScreen(
     id: Int,
     historyViewModel: HistoryViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel = hiltViewModel(),
-    navigationUp: () -> Unit = {}
+    navigationUp: () -> Unit = {},
+    onSectionItemClicked: (Int?, String) -> Unit,
 ) {
     val updateMode = -1
     historyViewModel.getHistory(id)
+    historyViewModel.getPayments()
+
     val history = historyViewModel.currentHistory.collectAsState().value
     var isIncome = history?.category?.isIncome == 1
     var isExpense = history?.category?.isIncome == 0
@@ -152,7 +155,8 @@ fun RegistrationScreen(
                     onSelected = { name, id ->
                         payment.value = name ?: ""
                         paymentId.value = id
-                    }
+                    },
+                    onAddItem = { onSectionItemClicked(it, "payment") }
                 )
             }
             InputText(label = "분류") {
@@ -163,6 +167,12 @@ fun RegistrationScreen(
                     onSelected = { name, id ->
                         category.value = name ?: ""
                         categoryId.value = id
+                    },
+                    onAddItem = {
+                        onSectionItemClicked(
+                            it,
+                            if (inComeIsChecked.value) "income" else "expense"
+                        )
                     }
                 )
             }
