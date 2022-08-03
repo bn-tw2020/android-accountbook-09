@@ -68,6 +68,9 @@ fun AccountBookApp() {
                     navController = appState.navController,
                     snackbarHostState = appState.scaffoldState.snackbarHostState,
                     navigationUp = { appState.navigateUp() },
+                    onClickedDetail = {
+                        appState.navigateToStatisticsDetail(Destinations.STATISTICS_DETAIL, it)
+                    },
                     onClicked = { id ->
                         appState.navigateToRegistration(Destinations.REGISTRATION, id)
                     },
@@ -127,6 +130,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     onClicked: (Int) -> Unit,
+    onClickedDetail: (Int?) -> Unit,
     onSectionItemClicked: (Int?, String) -> Unit,
     navigationUp: () -> Unit,
     historyViewModel: HistoryViewModel,
@@ -143,7 +147,8 @@ private fun NavGraphBuilder.accountBookNavGraph(
             settingViewModel,
             snackbarHostState,
             onClicked = { id -> onClicked(id) },
-            onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
+            onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) },
+            onClickedDetail = { onClickedDetail(it) }
         )
     }
     composable(
@@ -163,8 +168,20 @@ private fun NavGraphBuilder.accountBookNavGraph(
             onSectionItemClicked
         )
     }
-    composable(route = Destinations.STATISTICS_DETAIL) {
-        StatisticsDetailScreen()
+    composable(route = "${Destinations.STATISTICS_DETAIL}/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) { entry ->
+        val id = entry.arguments?.getInt("id") ?: -1
+        StatisticsDetailScreen(
+            id,
+            historyViewModel,
+            calendarViewModel,
+            navigationUp = navigationUp
+        )
     }
 
     composable(route = "${Destinations.SETTING_REGISTRATION}/{id}/{type}",
@@ -195,7 +212,8 @@ private fun NavGraphBuilder.addHomeGraph(
     settingViewModel: SettingViewModel,
     snackbarHostState: SnackbarHostState,
     onClicked: (Int) -> Unit,
-    onSectionItemClicked: (Int?, String) -> Unit
+    onSectionItemClicked: (Int?, String) -> Unit,
+    onClickedDetail: (Int?) -> Unit
 ) {
     composable(HomeSections.HISTORY.route) {
         HistoryScreen(
@@ -208,7 +226,7 @@ private fun NavGraphBuilder.addHomeGraph(
         CalendarScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.STATISTICS.route) {
-        StatisticsScreen(calendarViewModel)
+        StatisticsScreen(calendarViewModel, onClickedDetail = { onClickedDetail(it) })
     }
     composable(HomeSections.SETTING.route) {
         SettingScreen(

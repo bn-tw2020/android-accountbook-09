@@ -125,19 +125,19 @@ class SettingViewModel @Inject constructor(
         when (type) {
             "payment" -> {
                 _payments.value = _payments.value.map {
-                    if(Payment.isDefault(it.name)) it
+                    if (Payment.isDefault(it.name)) it
                     else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "expense" -> {
                 _expenseCategories.value = _expenseCategories.value.map {
-                    if(Category.isDefault(it.name)) it
+                    if (Category.isDefault(it.name)) it
                     else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "income" -> {
                 _incomeCategories.value = _incomeCategories.value.map {
-                    if(Category.isDefault(it.name)) it
+                    if (Category.isDefault(it.name)) it
                     else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
