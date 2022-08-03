@@ -150,8 +150,8 @@ class HistoryLocalDataSource @Inject constructor(
         databaseHelper.readableDatabase.use { database ->
             val isIncome = if (type) "1" else "0"
             val sql =
-                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = $month ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID} AND ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_IS_INCOME} = $isIncome"
-            val cursor = database.rawQuery(sql, null)
+                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID} AND ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(month, isIncome))
             return cursor.use {
                 while (it.moveToNext()) {
                     val id = it.getInt(0)
@@ -222,7 +222,6 @@ class HistoryLocalDataSource @Inject constructor(
             }
             database.update(DatabaseHelper.TABLE_ACCOUNT_BOOK, contentValues, "_id=$id", null)
         }
-        val findById = findById(id)
     }
 
     override fun save(

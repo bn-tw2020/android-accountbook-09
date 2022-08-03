@@ -12,10 +12,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,10 +31,14 @@ fun RegistrationSectionScreen(
     settingViewModel: SettingViewModel = hiltViewModel(),
     id: Int,
     type: String?,
-    navigationUp: () -> Unit
+    navigationUp: () -> Unit,
 ) {
-    val updateMode = -1
-    val title = if (id == updateMode) {
+    val addMode = -1
+    val colorList = if (type == "expense") expenseColorList else incomeColorList
+    val name = rememberSaveable { mutableStateOf("") }
+    val selectedItem = remember { mutableStateOf(colorList.first()) }
+
+    val title = if (id == addMode) {
         when (type) {
             "expense" -> "지출 카테고리 추가"
             "income" -> "수입 카테고리 추가"
@@ -45,13 +46,29 @@ fun RegistrationSectionScreen(
         }
     } else {
         when (type) {
-            "expense" -> "지출 카테고리 수정"
-            "income" -> "수입 카테고리 수정"
-            else -> "결제 수단 수정하기"
+            "expense" -> {
+                val expenseCategories = settingViewModel.expenseCategories.collectAsState().value
+                val expenseCategory = expenseCategories.find { it.id == id }
+                name.value = expenseCategory?.name ?: ""
+                selectedItem.value =
+                    Color(android.graphics.Color.parseColor(expenseCategory?.color))
+                "지출 카테고리 수정"
+            }
+            "income" -> {
+                val incomeCategories = settingViewModel.incomeCategories.collectAsState().value
+                val incomeCategory = incomeCategories.find { it.id == id }
+                name.value = incomeCategory?.name ?: ""
+                selectedItem.value = Color(android.graphics.Color.parseColor(incomeCategory?.color))
+                "수입 카테고리 수정"
+            }
+            else -> {
+                val payments = settingViewModel.payments.collectAsState().value
+                name.value = payments.find { it.id == id }?.name ?: ""
+                "결제 수단 수정하기"
+            }
         }
     }
 
-    val name = rememberSaveable { mutableStateOf("") }
     Scaffold(
         backgroundColor = OffWhite,
         topBar = {
@@ -72,13 +89,18 @@ fun RegistrationSectionScreen(
             InputText(label = "이름") {
                 InputContentText(name.value, onChanged = { name.value = it })
             }
-
-            val colorList = if (type == "expense") expenseColorList else incomeColorList
-            val selectedItem = remember { mutableStateOf(colorList.first()) }
             if (type == "expense" || type == "income") {
                 InputColor(colorList, selectedItem)
             }
-            SaveButton(id, updateMode, type, settingViewModel, name, selectedItem, navigationUp)
+            SaveButton(
+                id,
+                addMode,
+                type,
+                settingViewModel,
+                name.value,
+                selectedItem,
+                navigationUp
+            )
         }
     }
 }
@@ -109,7 +131,7 @@ private fun SaveButton(
     updateMode: Int,
     type: String?,
     settingViewModel: SettingViewModel,
-    name: MutableState<String>,
+    name: String,
     selectedItem: MutableState<Color>,
     navigationUp: () -> Unit
 ) {
@@ -126,20 +148,21 @@ private fun SaveButton(
                 .height(50.dp),
             shape = RoundedCornerShape(14.dp),
             onClicked = {
-                if (id == updateMode && (type == "expense" || type == "income")) {
-                    settingViewModel.saveCategory(
-                        name.value,
-                        type != "expense",
-                        selectedItem.value
-                    )
-                }
-                if (id == updateMode && type == "payment") {
-                    settingViewModel.savePayment(name.value)
+                if (id == updateMode) { // 등록
+                    if (type == "expense" || type == "income")
+                        settingViewModel.saveCategory(name, type != "expense", selectedItem.value)
+                    else
+                        settingViewModel.savePayment(name)
+                } else {
+                    if (type == "expense" || type == "income")
+                        settingViewModel.updateCategory(id, name, selectedItem.value, type != "expense")
+                    else
+                        settingViewModel.updatePayment(id, name)
                 }
                 navigationUp()
             },
             isClick = true,
-            enabled = name.value != "" && !name.value.contains(" "),
+            enabled = name != "" && !name.contains(" "),
             enabledBackgroundColor = Yellow.copy(alpha = 0.5f),
             clickBackgroundColor = Yellow,
             unClickBackgroundColor = Yellow
