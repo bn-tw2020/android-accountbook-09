@@ -27,6 +27,9 @@ class SettingViewModel @Inject constructor(
     private val _expenseCategories = MutableStateFlow<List<Category>>(emptyList())
     val expenseCategories: StateFlow<List<Category>> get() = _expenseCategories
 
+    private val _errorMessage = MutableStateFlow<String>("")
+    val errorMessage: StateFlow<String> get() = _errorMessage
+
     init {
         getPayments()
         getExpenseCategories()
@@ -70,21 +73,72 @@ class SettingViewModel @Inject constructor(
         getExpenseCategories()
     }
 
+    fun removePayments() {
+        val selectedPayment = _payments.value
+            .filter { it.isChecked }
+            .map { it.id }
+        paymentRepository.removePayments(selectedPayment)
+            .onSuccess { result ->
+                if (result) _payments.value = _payments.value.filter { !it.isChecked }
+                else _errorMessage.value = "내역에서 사용되고 있는 결제수단이 존재합니다."
+
+            }
+            .onFailure {
+                _errorMessage.value = "삭제 중 에러가 발생했습니다."
+            }
+    }
+
+    fun removeCategories(type: String) {
+        when (type) {
+            "expense" -> {
+                val selectedCategory = _expenseCategories.value
+                    .filter { it.isChecked }
+                    .map { it.id!! }
+                categoryRepository.removeCategories(selectedCategory)
+                    .onSuccess { result ->
+                        if (result) _expenseCategories.value =
+                            _expenseCategories.value.filter { !it.isChecked }
+                        else _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                    }
+                    .onFailure {
+                        _errorMessage.value = "삭제 중 에러가 발생했습니다."
+                    }
+            }
+            "income" -> {
+                val selectedCategory = _incomeCategories.value
+                    .filter { it.isChecked }
+                    .map { it.id!! }
+                categoryRepository.removeCategories(selectedCategory)
+                    .onSuccess { result ->
+                        if (result) _incomeCategories.value =
+                            _incomeCategories.value.filter { !it.isChecked }
+                        else _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                    }
+                    .onFailure {
+                        _errorMessage.value = "삭제 중 에러가 발생했습니다."
+                    }
+            }
+        }
+    }
+
     fun setCheckedItem(isChecked: Boolean, id: Int?, type: String) {
         when (type) {
             "payment" -> {
                 _payments.value = _payments.value.map {
-                    if (it.id == id) it.copy(isChecked = isChecked) else it
+                    if(Payment.isDefault(it.name)) it
+                    else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "expense" -> {
                 _expenseCategories.value = _expenseCategories.value.map {
-                    if (it.id == id) it.copy(isChecked = isChecked) else it
+                    if(Category.isDefault(it.name)) it
+                    else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
             "income" -> {
                 _incomeCategories.value = _incomeCategories.value.map {
-                    if (it.id == id) it.copy(isChecked = isChecked) else it
+                    if(Category.isDefault(it.name)) it
+                    else if (it.id == id) it.copy(isChecked = isChecked) else it
                 }
             }
         }
@@ -122,5 +176,9 @@ class SettingViewModel @Inject constructor(
                 resetCheckedItem(type)
             }
         }
+    }
+
+    fun initErrorMessage() {
+        _errorMessage.value = ""
     }
 }

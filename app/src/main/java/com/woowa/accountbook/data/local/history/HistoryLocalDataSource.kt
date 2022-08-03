@@ -54,6 +54,32 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
+    override fun existsByCategoryId(id: Int): Boolean {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT EXISTS (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ?) as exist"
+            val cursor = database.rawQuery(sql, arrayOf(id.toString()))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    it.getInt(0) == 1
+                } else false
+            }
+        }
+    }
+
+    override fun existsByPaymentId(id: Int): Boolean {
+        databaseHelper.readableDatabase.use { database ->
+            val sql =
+                "SELECT EXISTS (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ?) as exist"
+            val cursor = database.rawQuery(sql, arrayOf(id.toString()))
+            return cursor.use {
+                if (it.moveToNext()) {
+                    it.getInt(0) == 1
+                } else false
+            }
+        }
+    }
+
     override fun findByAll(): List<History> {
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->

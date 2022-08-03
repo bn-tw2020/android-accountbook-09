@@ -66,6 +66,7 @@ fun AccountBookApp() {
             ) {
                 accountBookNavGraph(
                     navController = appState.navController,
+                    snackbarHostState = appState.scaffoldState.snackbarHostState,
                     navigationUp = { appState.navigateUp() },
                     onClicked = { id ->
                         appState.navigateToRegistration(Destinations.REGISTRATION, id)
@@ -124,6 +125,7 @@ fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
 
 private fun NavGraphBuilder.accountBookNavGraph(
     navController: NavController,
+    snackbarHostState: SnackbarHostState,
     onClicked: (Int) -> Unit,
     onSectionItemClicked: (Int?, String) -> Unit,
     navigationUp: () -> Unit,
@@ -139,6 +141,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
             historyViewModel,
             calendarViewModel,
             settingViewModel,
+            snackbarHostState,
             onClicked = { id -> onClicked(id) },
             onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
         )
@@ -190,6 +193,7 @@ private fun NavGraphBuilder.addHomeGraph(
     historyViewModel: HistoryViewModel,
     calendarViewModel: CalendarViewModel,
     settingViewModel: SettingViewModel,
+    snackbarHostState: SnackbarHostState,
     onClicked: (Int) -> Unit,
     onSectionItemClicked: (Int?, String) -> Unit
 ) {
@@ -209,6 +213,7 @@ private fun NavGraphBuilder.addHomeGraph(
     composable(HomeSections.SETTING.route) {
         SettingScreen(
             settingViewModel,
+            snackbarHostState,
             onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
         )
     }
