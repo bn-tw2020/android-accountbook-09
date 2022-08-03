@@ -30,7 +30,7 @@ fun InputDropDownMenu(
     categoryList: List<Category> = emptyList(),
     type: Int,
     onSelected: (String?, Int?) -> Unit,
-    onAddItem: () -> Unit = {}
+    onAddItem: (Int?) -> Unit = {}
 ) {
     val expanded = remember { mutableStateOf(false) }
     val rotateIcon = animateFloatAsState(
@@ -104,7 +104,7 @@ fun InputDropDownMenu(
                 }
             }
             DropdownMenuItem(
-                onClick = {}
+                onClick = { onAddItem(-1) }
             ) {
                 Text(
                     text = "추가하기",
@@ -112,7 +112,7 @@ fun InputDropDownMenu(
                     color = Purple,
                     style = MaterialTheme.typography.caption
                 )
-                IconButton(onClick = {}) {
+                IconButton(onClick = { onAddItem(-1) }) {
                     Icon(
                         modifier = Modifier
                             .width(14.dp)

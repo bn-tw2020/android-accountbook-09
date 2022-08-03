@@ -107,6 +107,12 @@ fun HistoryScreen(
             }
         }
     ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(LightPurple)
+        )
         val totalHistory = historyViewModel.totalHistory.collectAsState().value
         val histories = historyViewModel.history.collectAsState().value
 

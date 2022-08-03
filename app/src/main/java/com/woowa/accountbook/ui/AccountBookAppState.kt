@@ -27,6 +27,7 @@ object Destinations {
     const val REGISTRATION = "home/history/registration"
     const val HOME = "home"
     const val STATISTICS_DETAIL = "home/statistics/detail"
+    const val SETTING_REGISTRATION = "home/setting/registration"
 }
 
 @Composable
@@ -72,6 +73,12 @@ class AccountBookState(
     fun navigateToRegistration(route: String, id: Int = -1) {
         if (route != currentRoute) {
             navController.navigate("${route}/${id}")
+        }
+    }
+
+    fun navigateToSettingRegistration(route: String, id: Int?, type: String) {
+        if (route != currentRoute) {
+            navController.navigate("${route}/${id}/${type}")
         }
     }
 }

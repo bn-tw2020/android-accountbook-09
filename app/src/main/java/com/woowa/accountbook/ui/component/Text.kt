@@ -170,7 +170,7 @@ fun InputContentText(
                 Text(
                     "입력해주세요",
                     style = MaterialTheme.typography.body2,
-                    color = Purple
+                    color = LightPurple
                 )
             }
             innerTextField()

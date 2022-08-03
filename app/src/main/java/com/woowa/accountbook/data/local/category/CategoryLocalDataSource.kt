@@ -27,11 +27,11 @@ class CategoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findByName(name: String): Category? {
+    override fun findByNameAndIsIncome(name: String, isIncome: String): Category? {
         databaseHelper.readableDatabase.use { database ->
             val sql =
-                "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_NAME} = ?"
-            val cursor = database.rawQuery(sql, arrayOf(name))
+                "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_NAME} = ? AND ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
+            val cursor = database.rawQuery(sql, arrayOf(name, isIncome))
             return cursor.use {
                 if (it.moveToNext()) {
                     Category(
