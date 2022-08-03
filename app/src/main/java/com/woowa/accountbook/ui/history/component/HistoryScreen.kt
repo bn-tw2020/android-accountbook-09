@@ -170,12 +170,12 @@ fun HistoryScreen(
 }
 
 @Composable
-private fun HistoryLazyColumn(
+fun HistoryLazyColumn(
     groupHistory: Map<Int, List<History>>,
-    editMode: Boolean,
-    onClicked: (Int) -> Unit,
-    onLongClicked: (Boolean, Int) -> Unit,
-    onCheckedItem: (Boolean, Int) -> Unit
+    editMode: Boolean = false,
+    onClicked: (Int) -> Unit = {},
+    onLongClicked: (Boolean, Int) -> Unit = { _, _ -> },
+    onCheckedItem: (Boolean, Int) -> Unit = { _, _ -> }
 ) {
     LazyColumn {
         for (history in groupHistory) {

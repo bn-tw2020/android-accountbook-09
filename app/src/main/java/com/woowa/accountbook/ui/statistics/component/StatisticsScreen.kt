@@ -3,6 +3,7 @@ package com.woowa.accountbook.ui.statistics.component
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -38,14 +39,21 @@ import kotlin.math.round
 @Composable
 fun StatisticsScreen(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
-    historyViewModel: HistoryViewModel = hiltViewModel()
+    historyViewModel: HistoryViewModel = hiltViewModel(),
+    onClickedDetail: (Int?) -> Unit = {}
 ) {
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.collectAsState().value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
     val groupBy =
-        histories.groupBy { Pair(it.category?.name ?: "", it.category?.color ?: "#F7F6F3") }
+        histories.groupBy {
+            Triple(
+                it.category?.name ?: "",
+                it.category?.color ?: "#F7F6F3",
+                it.category?.id
+            )
+        }
     val totalExpense = histories.sumOf { it.money }
 
     Scaffold(
@@ -102,7 +110,11 @@ fun StatisticsScreen(
                 val categorySum = it.value.fold(0) { sum, history -> sum + history.money }
                 Pair(it.key, categorySum)
             }.sortedByDescending { it.second }
-            ExpenseCategory(totalExpense, groupBy, expenseCategoryList)
+            ExpenseCategory(
+                totalExpense,
+                groupBy,
+                expenseCategoryList,
+                onClickedDetail = { onClickedDetail(it) })
         }
     }
 }
@@ -110,8 +122,9 @@ fun StatisticsScreen(
 @Composable
 private fun ExpenseCategory(
     totalExpense: Int,
-    groupBy: Map<Pair<String, String>, List<History>>,
-    expenseCategoryList: List<Pair<Pair<String, String>, Int>>
+    groupBy: Map<Triple<String, String, Int?>, List<History>>,
+    expenseCategoryList: List<Pair<Triple<String, String, Int?>, Int>>,
+    onClickedDetail: (Int?) -> Unit
 ) {
     Column {
         BothSideText(
@@ -138,14 +151,15 @@ private fun ExpenseCategory(
         )
         Spacer(modifier = Modifier.height(23.dp))
         ExpenseGraph(groupBy, totalExpense)
-        GraphLegend(expenseCategoryList, totalExpense)
+        GraphLegend(expenseCategoryList, totalExpense, onClickedDetail = { onClickedDetail(it) })
     }
 }
 
 @Composable
 private fun GraphLegend(
-    expenseCategoryList: List<Pair<Pair<String, String>, Int>>,
-    totalExpense: Int
+    expenseCategoryList: List<Pair<Triple<String, String, Int?>, Int>>,
+    totalExpense: Int,
+    onClickedDetail: (Int?) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -156,7 +170,10 @@ private fun GraphLegend(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 9.dp),
+                    .padding(vertical = 9.dp)
+                    .clickable {
+                        onClickedDetail(category.first.third)
+                    },
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row {
@@ -188,13 +205,14 @@ private fun GraphLegend(
                     .fillMaxWidth()
                     .background(LightPurple)
             )
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
 
 @Composable
 private fun ExpenseGraph(
-    groupBy: Map<Pair<String, String>, List<History>>,
+    groupBy: Map<Triple<String, String, Int?>, List<History>>,
     totalExpense: Int,
 ) {
     AndroidView(

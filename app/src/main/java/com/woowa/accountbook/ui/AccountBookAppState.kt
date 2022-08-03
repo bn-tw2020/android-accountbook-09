@@ -76,6 +76,12 @@ class AccountBookState(
         }
     }
 
+    fun navigateToStatisticsDetail(route: String, id: Int?) {
+        if (route != currentRoute) {
+            navController.navigate("${route}/${id}")
+        }
+    }
+
     fun navigateToSettingRegistration(route: String, id: Int?, type: String) {
         if (route != currentRoute) {
             navController.navigate("${route}/${id}/${type}")

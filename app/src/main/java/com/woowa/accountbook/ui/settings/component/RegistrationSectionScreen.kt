@@ -155,7 +155,12 @@ private fun SaveButton(
                         settingViewModel.savePayment(name)
                 } else {
                     if (type == "expense" || type == "income")
-                        settingViewModel.updateCategory(id, name, selectedItem.value, type != "expense")
+                        settingViewModel.updateCategory(
+                            id,
+                            name,
+                            selectedItem.value,
+                            type != "expense"
+                        )
                     else
                         settingViewModel.updatePayment(id, name)
                 }
