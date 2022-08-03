@@ -37,11 +37,11 @@ import kotlin.math.round
 
 @Composable
 fun StatisticsScreen(
-    historyViewModel: HistoryViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
-    val (year, month) = calendarViewModel.yearMonthPair.value
+    val (year, month) = calendarViewModel.yearMonthPair.collectAsState().value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
     val groupBy =
