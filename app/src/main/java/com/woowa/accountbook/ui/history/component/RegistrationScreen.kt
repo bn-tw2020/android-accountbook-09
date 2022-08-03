@@ -55,9 +55,9 @@ fun RegistrationScreen(
     if (inComeIsChecked.value) historyViewModel.getCategories("1") else historyViewModel.getCategories(
         "0"
     )
-    val selectedYear = rememberSaveable { mutableStateOf(year) }
-    val selectedMonth = rememberSaveable { mutableStateOf(month) }
-    val selectedDate = rememberSaveable { mutableStateOf(NOW_DAY) }
+    val selectedYear = rememberSaveable { mutableStateOf(history?.year ?: year) }
+    val selectedMonth = rememberSaveable { mutableStateOf(history?.month ?: month) }
+    val selectedDate = rememberSaveable { mutableStateOf(history?.day ?: NOW_DAY) }
 
     Scaffold(
         backgroundColor = OffWhite,
