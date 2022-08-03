@@ -8,5 +8,6 @@ interface PaymentDataSource {
     fun findByName(name: String): Payment?
     fun findAll(): List<Payment>
     fun deleteById(list: List<Int>)
+    fun update(id: Int, name: String)
     fun save(name: String)
 }

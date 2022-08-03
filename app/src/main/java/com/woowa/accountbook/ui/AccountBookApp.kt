@@ -21,6 +21,7 @@ import com.woowa.accountbook.ui.history.component.HistoryScreen
 import com.woowa.accountbook.ui.history.component.RegistrationScreen
 import com.woowa.accountbook.ui.iconpack.IconPack
 import com.woowa.accountbook.ui.iconpack.Plus
+import com.woowa.accountbook.ui.settings.SettingViewModel
 import com.woowa.accountbook.ui.settings.component.RegistrationSectionScreen
 import com.woowa.accountbook.ui.settings.component.SettingScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsDetailScreen
@@ -56,6 +57,7 @@ fun AccountBookApp() {
 
             val historyViewModel: HistoryViewModel = hiltViewModel()
             val calendarViewModel: CalendarViewModel = hiltViewModel()
+            val settingViewModel: SettingViewModel = hiltViewModel()
 
             NavHost(
                 navController = appState.navController,
@@ -76,7 +78,8 @@ fun AccountBookApp() {
                         )
                     },
                     historyViewModel = historyViewModel,
-                    calendarViewModel = calendarViewModel
+                    calendarViewModel = calendarViewModel,
+                    settingViewModel = settingViewModel,
                 )
             }
         }
@@ -125,7 +128,8 @@ private fun NavGraphBuilder.accountBookNavGraph(
     onSectionItemClicked: (Int?, String) -> Unit,
     navigationUp: () -> Unit,
     historyViewModel: HistoryViewModel,
-    calendarViewModel: CalendarViewModel
+    calendarViewModel: CalendarViewModel,
+    settingViewModel: SettingViewModel
 ) {
     navigation(
         route = Destinations.HOME,
@@ -134,6 +138,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
         addHomeGraph(
             historyViewModel,
             calendarViewModel,
+            settingViewModel,
             onClicked = { id -> onClicked(id) },
             onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
         )
@@ -174,7 +179,8 @@ private fun NavGraphBuilder.accountBookNavGraph(
         RegistrationSectionScreen(
             id = id,
             type = type,
-            navigationUp = navigationUp
+            navigationUp = navigationUp,
+            settingViewModel = settingViewModel
         )
     }
 
@@ -183,6 +189,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
 private fun NavGraphBuilder.addHomeGraph(
     historyViewModel: HistoryViewModel,
     calendarViewModel: CalendarViewModel,
+    settingViewModel: SettingViewModel,
     onClicked: (Int) -> Unit,
     onSectionItemClicked: (Int?, String) -> Unit
 ) {
@@ -197,10 +204,11 @@ private fun NavGraphBuilder.addHomeGraph(
         CalendarScreen(historyViewModel, calendarViewModel)
     }
     composable(HomeSections.STATISTICS.route) {
-        StatisticsScreen(historyViewModel, calendarViewModel)
+        StatisticsScreen(calendarViewModel)
     }
     composable(HomeSections.SETTING.route) {
         SettingScreen(
+            settingViewModel,
             onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
         )
     }

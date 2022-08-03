@@ -78,6 +78,15 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
+    override fun update(id: Int, name: String) {
+        databaseHelper.writableDatabase.use { database ->
+            val contentValues = ContentValues().apply {
+                put(DatabaseHelper.PAYMENT_COL_NAME, name)
+            }
+            database.update(DatabaseHelper.TABLE_PAYMENT, contentValues, "_id=$id", null)
+        }
+    }
+
     override fun save(name: String) {
         databaseHelper.writableDatabase.use { database ->
             val contentValues = ContentValues().apply {

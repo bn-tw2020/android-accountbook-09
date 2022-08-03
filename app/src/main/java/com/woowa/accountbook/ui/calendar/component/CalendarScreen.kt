@@ -16,9 +16,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowa.accountbook.common.rawToMoneyFormat
 import com.woowa.accountbook.domain.entity.DateItem
@@ -228,6 +232,13 @@ fun CalendarItem(
             ),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        val textStyle = TextStyle(
+            fontFamily = FontFamily.Default,
+            fontSize = 7.sp,
+            fontWeight = FontWeight.W700,
+            lineHeight = 12.sp,
+            letterSpacing = 0.4.sp
+        )
         val income = dateItem.income ?: 0
         val expense = dateItem.expense ?: 0
         Column {
@@ -235,20 +246,20 @@ fun CalendarItem(
                 Text(
                     text = rawToMoneyFormat(income, 1),
                     color = Green3,
-                    style = MaterialTheme.typography.caption
+                    style = textStyle
                 )
             }
             if (expense != 0) {
                 Text(
                     text = rawToMoneyFormat(expense, 0),
                     color = Red,
-                    style = MaterialTheme.typography.caption
+                    style = textStyle
                 )
             }
             Text(
                 text = rawToMoneyFormat(income - expense, 1),
                 color = LightPurple,
-                style = MaterialTheme.typography.caption
+                style = textStyle
             )
         }
         Text(

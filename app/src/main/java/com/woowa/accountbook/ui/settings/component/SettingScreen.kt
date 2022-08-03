@@ -32,9 +32,6 @@ fun SettingScreen(
     onSectionItemClicked: (Int?, String) -> Unit = { _, _ -> }
 ) {
 
-    settingViewModel.getPayments()
-    settingViewModel.getExpenseCategories()
-    settingViewModel.getIncomeCategories()
     val paymentEditMode = remember { mutableStateOf(false) }
     val expenseEditMode = remember { mutableStateOf(false) }
     val incomeEditMode = remember { mutableStateOf(false) }

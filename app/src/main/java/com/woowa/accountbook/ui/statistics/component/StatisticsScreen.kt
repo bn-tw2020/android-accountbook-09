@@ -37,11 +37,11 @@ import kotlin.math.round
 
 @Composable
 fun StatisticsScreen(
-    historyViewModel: HistoryViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
-    val (year, month) = calendarViewModel.yearMonthPair.value
+    val (year, month) = calendarViewModel.yearMonthPair.collectAsState().value
     historyViewModel.getHistoryMonthAndType(month, false)
     val histories = historyViewModel.history.collectAsState().value
     val groupBy =
@@ -174,7 +174,7 @@ private fun GraphLegend(
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    text = "${round(100 * category.second / totalExpense.toFloat())}%",
+                    text = "${round(category.second / totalExpense.toDouble() * 100)}%",
                     style = MaterialTheme.typography.subtitle2,
                     color = Purple
                 )
@@ -214,7 +214,7 @@ private fun ExpenseGraph(
 
 
             val noOfEmp = mutableListOf<PieEntry>()
-            groupBy.forEach { (key, value) ->
+            val colorList = groupBy.map { (key, value) ->
                 val fold = value.fold(0) { sum, history -> sum + history.money }
                 noOfEmp.add(
                     PieEntry(
@@ -222,14 +222,15 @@ private fun ExpenseGraph(
                         round(100 * fold / totalExpense.toFloat())
                     )
                 )
-            }
+                Pair(fold.toFloat(), key.second)
+            }.sortedByDescending { it.first }
             noOfEmp.sortByDescending { it.value }
 
             val dataSet = PieDataSet(noOfEmp, "Expense")
             dataSet.setDrawValues(false)
             val pieData = PieData(dataSet)
-            val categoryColorList = groupBy.map { (key, value) ->
-                android.graphics.Color.parseColor(key.second)
+            val categoryColorList = colorList.map {
+                android.graphics.Color.parseColor(it.second)
             }
             dataSet.colors = categoryColorList
             pieChart.data = pieData
@@ -239,7 +240,7 @@ private fun ExpenseGraph(
         },
         update = { pieChart ->
             val noOfEmp = mutableListOf<PieEntry>()
-            groupBy.forEach { (key, value) ->
+            val colorList = groupBy.map { (key, value) ->
                 val fold = value.fold(0) { sum, history -> sum + history.money }
                 noOfEmp.add(
                     PieEntry(
@@ -247,14 +248,15 @@ private fun ExpenseGraph(
                         round(100 * fold / totalExpense.toFloat())
                     )
                 )
-            }
+                Pair(fold.toFloat(), key.second)
+            }.sortedByDescending { it.first }
             noOfEmp.sortByDescending { it.value }
 
             val dataSet = PieDataSet(noOfEmp, "Expense")
             dataSet.setDrawValues(false)
             val pieData = PieData(dataSet)
-            val categoryColorList = groupBy.map { (key, value) ->
-                android.graphics.Color.parseColor(key.second)
+            val categoryColorList = colorList.map {
+                android.graphics.Color.parseColor(it.second)
             }
             dataSet.colors = categoryColorList
             pieChart.data = pieData
