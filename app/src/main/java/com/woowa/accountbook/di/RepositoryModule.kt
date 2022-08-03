@@ -31,13 +31,19 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideCategoryRepository(categoryDataSource: CategoryDataSource): CategoryRepository {
-        return CategoryRepositoryImpl(categoryDataSource)
+    fun provideCategoryRepository(
+        historyDataSource: HistoryDataSource,
+        categoryDataSource: CategoryDataSource
+    ): CategoryRepository {
+        return CategoryRepositoryImpl(historyDataSource, categoryDataSource)
     }
 
     @Provides
     @Singleton
-    fun providePaymentRepository(paymentDataSource: PaymentDataSource): PaymentRepository {
-        return PaymentRepositoryImpl(paymentDataSource)
+    fun providePaymentRepository(
+        historyDataSource: HistoryDataSource,
+        paymentDataSource: PaymentDataSource
+    ): PaymentRepository {
+        return PaymentRepositoryImpl(historyDataSource, paymentDataSource)
     }
 }

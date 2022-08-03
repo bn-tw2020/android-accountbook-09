@@ -1,5 +1,6 @@
 package com.woowa.accountbook.ui.settings.component
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,13 +8,13 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.woowa.accountbook.data.entitiy.Category
@@ -26,15 +27,24 @@ import com.woowa.accountbook.ui.iconpack.Trash
 import com.woowa.accountbook.ui.settings.SettingViewModel
 import com.woowa.accountbook.ui.theme.*
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun SettingScreen(
     settingViewModel: SettingViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState,
     onSectionItemClicked: (Int?, String) -> Unit = { _, _ -> }
 ) {
+    val message = settingViewModel.errorMessage.collectAsState().value
+    LaunchedEffect(message) {
+        if (message.isNotEmpty()) {
+            snackbarHostState.showSnackbar(message, duration = SnackbarDuration.Short)
+            settingViewModel.initErrorMessage()
+        }
+    }
 
-    val paymentEditMode = remember { mutableStateOf(false) }
-    val expenseEditMode = remember { mutableStateOf(false) }
-    val incomeEditMode = remember { mutableStateOf(false) }
+    val paymentEditMode = rememberSaveable { mutableStateOf(false) }
+    val expenseEditMode = rememberSaveable { mutableStateOf(false) }
+    val incomeEditMode = rememberSaveable { mutableStateOf(false) }
     val payments = settingViewModel.payments.collectAsState().value
     val expenseCategories = settingViewModel.expenseCategories.collectAsState().value
     val incomeCategories = settingViewModel.incomeCategories.collectAsState().value
@@ -45,7 +55,6 @@ fun SettingScreen(
             if (!paymentEditMode.value && !expenseEditMode.value && !incomeEditMode.value) {
                 AccountBookAppBar(title = "설정")
             } else {
-
                 AccountBookAppBar(
                     title = if (paymentEditMode.value)
                         "${payments.count { it.isChecked }}개 선택"
@@ -71,12 +80,15 @@ fun SettingScreen(
                     onActionClicked = {
                         if (paymentEditMode.value) {
                             paymentEditMode.value = !paymentEditMode.value
+                            settingViewModel.removePayments()
                             settingViewModel.removeItem("payment")
                         } else if (expenseEditMode.value) {
                             expenseEditMode.value = !expenseEditMode.value
+                            settingViewModel.removeCategories("expense")
                             settingViewModel.removeItem("expense")
                         } else {
                             incomeEditMode.value = !incomeEditMode.value
+                            settingViewModel.removeCategories("income")
                             settingViewModel.removeItem("income")
                         }
                     }
@@ -96,7 +108,16 @@ fun SettingScreen(
                 title = "결제수단",
                 payments = payments,
                 editMode = paymentEditMode.value,
-                onClicked = { onSectionItemClicked(it, "payment") },
+                onClicked = {
+                    settingViewModel.initErrorMessage()
+                    paymentEditMode.value = false
+                    expenseEditMode.value = false
+                    incomeEditMode.value = false
+                    settingViewModel.resetCheckedItem("income")
+                    settingViewModel.resetCheckedItem("expense")
+                    settingViewModel.resetCheckedItem("payment")
+                    onSectionItemClicked(it, "payment")
+                },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = !mode
                     expenseEditMode.value = false
@@ -114,7 +135,16 @@ fun SettingScreen(
                 title = "지출 카테고리",
                 category = expenseCategories,
                 editMode = expenseEditMode.value,
-                onClicked = { onSectionItemClicked(it, "expense") },
+                onClicked = {
+                    settingViewModel.initErrorMessage()
+                    paymentEditMode.value = false
+                    expenseEditMode.value = false
+                    incomeEditMode.value = false
+                    settingViewModel.resetCheckedItem("income")
+                    settingViewModel.resetCheckedItem("expense")
+                    settingViewModel.resetCheckedItem("payment")
+                    onSectionItemClicked(it, "expense")
+                },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = false
                     expenseEditMode.value = !mode
@@ -132,7 +162,16 @@ fun SettingScreen(
                 title = "수입 카테고리",
                 category = incomeCategories,
                 editMode = incomeEditMode.value,
-                onClicked = { onSectionItemClicked(it, "income") },
+                onClicked = {
+                    settingViewModel.initErrorMessage()
+                    paymentEditMode.value = false
+                    expenseEditMode.value = false
+                    incomeEditMode.value = false
+                    settingViewModel.resetCheckedItem("income")
+                    settingViewModel.resetCheckedItem("expense")
+                    settingViewModel.resetCheckedItem("payment")
+                    onSectionItemClicked(it, "income")
+                },
                 onLongClicked = { mode, id ->
                     paymentEditMode.value = false
                     expenseEditMode.value = false
@@ -253,10 +292,4 @@ fun AddItemText(
             Icon(imageVector = IconPack.Plus, contentDescription = "plus", tint = Purple)
         }
     }
-}
-
-@Preview(showBackground = false)
-@Composable
-fun SettingScreenPreview() {
-    SettingScreen()
 }

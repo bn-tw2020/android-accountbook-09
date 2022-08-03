@@ -5,6 +5,8 @@ import com.woowa.accountbook.data.entitiy.History
 interface HistoryDataSource {
 
     fun findById(id: Int): History?
+    fun existsByCategoryId(id: Int): Boolean
+    fun existsByPaymentId(id: Int): Boolean
     fun findByAll(): List<History>
     fun findByMonth(month: String): List<History>
     fun findByMonthAndType(month: String, type: Boolean): List<History>

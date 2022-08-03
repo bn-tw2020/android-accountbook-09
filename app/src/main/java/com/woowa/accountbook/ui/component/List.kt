@@ -99,7 +99,11 @@ fun SettingItem(
         if (isEdit) {
             Spacer(modifier = Modifier.width(16.dp))
             AccountBookCheckBox(
-                checked = category?.isChecked ?: (payment?.isChecked ?: false),
+                checked = if (Category.isDefault(category?.name) || Payment.isDefault(payment?.name)) false
+                else category?.isChecked ?: (payment?.isChecked ?: false),
+                enabled = if (category != null) !Category.isDefault(category.name!!) else !Payment.isDefault(
+                    payment?.name!!
+                ),
                 onCheckedChange = {
                     if (category != null) onCheckedItem(it, category.id)
                     if (payment != null) onCheckedItem(it, payment.id)
