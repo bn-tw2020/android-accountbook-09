@@ -17,6 +17,12 @@ class CategoryRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun updateCategory(id: Int, name: String, color: String, isIncome: Boolean) {
+        runCatching {
+            categoryDataSource.update(id, name, if(isIncome) "1" else "0", color)
+        }
+    }
+
     override fun saveCategory(name: String, color: String, isIncome: Boolean) {
         runCatching {
             val category =

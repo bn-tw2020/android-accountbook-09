@@ -1,8 +1,8 @@
 package com.woowa.accountbook.ui.settings
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
+import com.woowa.accountbook.common.toHex
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.Payment
 import com.woowa.accountbook.domain.repository.category.CategoryRepository
@@ -27,28 +27,47 @@ class SettingViewModel @Inject constructor(
     private val _expenseCategories = MutableStateFlow<List<Category>>(emptyList())
     val expenseCategories: StateFlow<List<Category>> get() = _expenseCategories
 
-    fun getPayments() {
+    init {
+        getPayments()
+        getExpenseCategories()
+        getIncomeCategories()
+    }
+
+    private fun getPayments() {
         val paymentList = paymentRepository.getPayments().getOrThrow()
         _payments.value = paymentList
     }
 
-    fun getIncomeCategories() {
+    private fun getIncomeCategories() {
         val categoryList = categoryRepository.getCategoriesByType("1").getOrThrow()
         _incomeCategories.value = categoryList
     }
 
-    fun getExpenseCategories() {
+    private fun getExpenseCategories() {
         val categoryList = categoryRepository.getCategoriesByType("0").getOrThrow()
         _expenseCategories.value = categoryList
     }
 
     fun savePayment(name: String) {
         paymentRepository.savePayment(name)
+        getPayments()
     }
 
     fun saveCategory(name: String, isIncome: Boolean, color: Color) {
-        val stringColor = String.format("#%06X", (0xFFFFFF and color.toArgb()))
-        categoryRepository.saveCategory(name, stringColor, isIncome)
+        categoryRepository.saveCategory(name, color.toHex(), isIncome)
+        getIncomeCategories()
+        getExpenseCategories()
+    }
+
+    fun updatePayment(id: Int, name: String) {
+        paymentRepository.updatePayment(id, name)
+        getPayments()
+    }
+
+    fun updateCategory(id: Int, name: String, color: Color, isIncome: Boolean) {
+        categoryRepository.updateCategory(id, name, color.toHex(), isIncome)
+        getIncomeCategories()
+        getExpenseCategories()
     }
 
     fun setCheckedItem(isChecked: Boolean, id: Int?, type: String) {

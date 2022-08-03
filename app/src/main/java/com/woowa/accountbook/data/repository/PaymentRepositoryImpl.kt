@@ -17,6 +17,12 @@ class PaymentRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
+    override fun updatePayment(id: Int, name: String) {
+        runCatching {
+            paymentDataSource.update(id, name)
+        }
+    }
+
     override fun savePayment(name: String) {
         runCatching {
             val payment = paymentDataSource.findByName(name)

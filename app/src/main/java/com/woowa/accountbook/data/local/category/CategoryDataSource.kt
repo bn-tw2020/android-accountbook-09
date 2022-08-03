@@ -8,5 +8,6 @@ interface CategoryDataSource {
     fun findByNameAndIsIncome(name: String, isIncome: String): Category?
     fun findByType(type: String): List<Category>
     fun deleteById(list: List<Int>)
+    fun update(id: Int, name: String, isIncome: String, color: String)
     fun save(name: String, color: String, isIncome: Boolean)
 }

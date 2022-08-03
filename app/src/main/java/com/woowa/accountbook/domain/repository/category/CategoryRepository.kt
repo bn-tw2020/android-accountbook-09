@@ -5,5 +5,6 @@ import com.woowa.accountbook.data.entitiy.Category
 interface CategoryRepository {
     fun getCategoriesByType(type: String): Result<List<Category>>
     fun removeCategories(list: List<Int>)
+    fun updateCategory(id: Int, name: String, color: String, isIncome: Boolean)
     fun saveCategory(name: String, color: String, isIncome: Boolean)
 }

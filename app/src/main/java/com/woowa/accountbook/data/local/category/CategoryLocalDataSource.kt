@@ -79,6 +79,17 @@ class CategoryLocalDataSource @Inject constructor(
         }
     }
 
+    override fun update(id: Int, name: String, isIncome: String, color: String) {
+        databaseHelper.writableDatabase.use { database ->
+            val contentValues = ContentValues().apply {
+                put(DatabaseHelper.CATEGORY_COL_NAME, name)
+                put(DatabaseHelper.CATEGORY_COL_IS_INCOME, isIncome)
+                put(DatabaseHelper.CATEGORY_COL_COLOR, color)
+            }
+            database.update(DatabaseHelper.TABLE_CATEGORY, contentValues, "_id=$id", null)
+        }
+    }
+
     override fun save(name: String, color: String, isIncome: Boolean) {
         databaseHelper.writableDatabase.use { database ->
             val contentValues = ContentValues().apply {
