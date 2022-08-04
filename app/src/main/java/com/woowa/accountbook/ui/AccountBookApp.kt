@@ -36,19 +36,17 @@ fun AccountBookApp() {
         val appState = rememberAccountBookState()
         Scaffold(
             bottomBar = {
-                if (appState.shouldShowBottomBar) {
-                    AccountBookBottomBar(
-                        tabs = appState.bottomBarTabs,
-                        currentRoute = appState.currentRoute ?: HomeSections.HISTORY.route,
-                        navigateToRoute = { route -> appState.navigateToBottomBarRoute(route) }
-                    )
-                }
+                AccountBookBottomBar(
+                    tabs = appState.bottomBarTabs,
+                    currentRoute = appState.currentRoute ?: History.route,
+                    navigateToRoute = { route -> appState.navigateToBottomBarRoute(route) }
+                )
             },
             floatingActionButton = {
                 if (appState.shouldShowFloatingActionButton) {
                     AccountBookFloatingButton(
                         icon = IconPack.Plus,
-                        onClicked = { appState.navigateToRegistration(Destinations.REGISTRATION) }
+                        onClicked = { appState.navigateToRegistration(Registration.route) }
                     )
                 }
             },
@@ -61,7 +59,7 @@ fun AccountBookApp() {
 
             NavHost(
                 navController = appState.navController,
-                startDestination = Destinations.HOME,
+                startDestination = "home",
                 modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 accountBookNavGraph(
@@ -69,14 +67,14 @@ fun AccountBookApp() {
                     snackbarHostState = appState.scaffoldState.snackbarHostState,
                     navigationUp = { appState.navigateUp() },
                     onClickedDetail = {
-                        appState.navigateToStatisticsDetail(Destinations.STATISTICS_DETAIL, it)
+                        appState.navigateToStatisticsDetail(StatisticsDetail.route, it)
                     },
                     onClicked = { id ->
-                        appState.navigateToRegistration(Destinations.REGISTRATION, id)
+                        appState.navigateToRegistration(Registration.route, id)
                     },
                     onSectionItemClicked = { id, type ->
                         appState.navigateToSettingRegistration(
-                            Destinations.SETTING_REGISTRATION,
+                            SettingRegistration.route,
                             id,
                             type
                         )
@@ -92,7 +90,7 @@ fun AccountBookApp() {
 
 @Composable
 fun AccountBookBottomBar(
-    tabs: Array<HomeSections>,
+    tabs: List<HomeSections>,
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
 ) {
@@ -100,10 +98,11 @@ fun AccountBookBottomBar(
 
     BottomNavigation {
         tabs.forEach { section ->
-            val selected = section == currentSection || selectNavigation(currentRoute, section)
+            val selected =
+                section == currentSection || selectNavigation(section.route, currentRoute)
             BottomNavigationItem(
                 icon = {
-                    Icon(imageVector = section.icon, contentDescription = section.name)
+                    Icon(imageVector = section.icon, contentDescription = section.route)
                 },
                 label = {
                     Text(text = stringResource(id = section.title))
@@ -118,12 +117,8 @@ fun AccountBookBottomBar(
     }
 }
 
-fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
-    return when (section.route) {
-        HomeSections.HISTORY.route -> currentRoute.contains(HomeSections.HISTORY.route)
-        HomeSections.SETTING.route -> currentRoute.contains(HomeSections.SETTING.route)
-        else -> false
-    }
+fun selectNavigation(tab: String, currentRoute: String): Boolean {
+    return currentRoute.contains(tab)
 }
 
 private fun NavGraphBuilder.accountBookNavGraph(
@@ -138,8 +133,8 @@ private fun NavGraphBuilder.accountBookNavGraph(
     settingViewModel: SettingViewModel
 ) {
     navigation(
-        route = Destinations.HOME,
-        startDestination = HomeSections.HISTORY.route
+        route = "home",
+        startDestination = History.route
     ) {
         addHomeGraph(
             historyViewModel,
@@ -152,7 +147,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
         )
     }
     composable(
-        route = "${Destinations.REGISTRATION}/{id}",
+        route = "${Registration.route}/{id}",
         arguments = listOf(
             navArgument("id") {
                 type = NavType.IntType
@@ -168,7 +163,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
             onSectionItemClicked
         )
     }
-    composable(route = "${Destinations.STATISTICS_DETAIL}/{id}",
+    composable(route = "${StatisticsDetail.route}/{id}",
         arguments = listOf(
             navArgument("id") {
                 type = NavType.IntType
@@ -184,7 +179,7 @@ private fun NavGraphBuilder.accountBookNavGraph(
         )
     }
 
-    composable(route = "${Destinations.SETTING_REGISTRATION}/{id}/{type}",
+    composable(route = "${SettingRegistration.route}/{id}/{type}",
         arguments = listOf(
             navArgument("id") {
                 type = NavType.IntType
@@ -215,20 +210,20 @@ private fun NavGraphBuilder.addHomeGraph(
     onSectionItemClicked: (Int?, String) -> Unit,
     onClickedDetail: (Int?) -> Unit
 ) {
-    composable(HomeSections.HISTORY.route) {
+    composable(History.route) {
         HistoryScreen(
             historyViewModel,
             calendarViewModel,
             onClicked = { id -> onClicked(id) }
         )
     }
-    composable(HomeSections.CALENDAR.route) {
+    composable(Calendar.route) {
         CalendarScreen(historyViewModel, calendarViewModel)
     }
-    composable(HomeSections.STATISTICS.route) {
+    composable(Statistics.route) {
         StatisticsScreen(calendarViewModel, onClickedDetail = { onClickedDetail(it) })
     }
-    composable(HomeSections.SETTING.route) {
+    composable(Setting.route) {
         SettingScreen(
             settingViewModel,
             snackbarHostState,
