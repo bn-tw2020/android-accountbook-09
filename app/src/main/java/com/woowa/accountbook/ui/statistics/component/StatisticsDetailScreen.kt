@@ -78,8 +78,8 @@ private fun ExpenseGraph(expenseHistories: List<History>, id: Int?) {
         val sumOf = value.sumOf { it.money }
         month to sumOf
     }
-    val minPrice = graphData.minOf { it.second }
-    val maxPrice = graphData.maxOf { it.second }
+    val minPrice = if (graphData.isEmpty()) 0 else graphData.minOf { it.second }
+    val maxPrice = if (graphData.isEmpty()) 0 else graphData.maxOf { it.second }
 
     AndroidView(
         modifier = Modifier
@@ -114,7 +114,8 @@ private fun ExpenseGraph(expenseHistories: List<History>, id: Int?) {
                 setDrawLabels(false)
                 setDrawAxisLine(false)
                 setDrawGridLines(false)
-                granularity = (graphData.sumOf { it.second } / graphData.size).toFloat()
+                granularity =
+                    (graphData.sumOf { it.second } / if (graphData.isEmpty()) 1 else graphData.size).toFloat()
                 axisMinimum = minPrice.toFloat()
                 axisMaximum = maxPrice.toFloat()
             }
