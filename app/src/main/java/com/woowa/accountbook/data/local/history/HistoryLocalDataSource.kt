@@ -82,7 +82,7 @@ class HistoryLocalDataSource @Inject constructor(
 
     override suspend fun findByAll(year: Int): List<History> {
         val historyList = mutableListOf<History>()
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.TABLE_ACCOUNT_BOOK}.${DatabaseHelper.ACCOUNT_BOOK_COL_YEAR} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
             val cursor = database.rawQuery(sql, arrayOf(year.toString()))
@@ -128,7 +128,7 @@ class HistoryLocalDataSource @Inject constructor(
 
     override suspend fun findByMonth(month: String): List<History> {
         val historyList = mutableListOf<History>()
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = $month ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_DAY} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
             val cursor = database.rawQuery(sql, null)
@@ -173,7 +173,7 @@ class HistoryLocalDataSource @Inject constructor(
 
     override suspend fun findByMonthAndType(month: String, type: Boolean): List<History> {
         val historyList = mutableListOf<History>()
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val isIncome = if (type) "1" else "0"
             val sql =
                 "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID} AND ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
@@ -219,7 +219,7 @@ class HistoryLocalDataSource @Inject constructor(
     }
 
     override suspend fun deleteById(list: List<Int>) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             list.forEach { id ->
                 database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_ID} = $id")
             }
@@ -236,7 +236,7 @@ class HistoryLocalDataSource @Inject constructor(
         day: Int,
         paymentId: Int
     ) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.ACCOUNT_BOOK_COL_MONEY, money)
                 put(DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY, categoryId)
@@ -259,7 +259,7 @@ class HistoryLocalDataSource @Inject constructor(
         day: Int,
         paymentId: Int
     ) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.ACCOUNT_BOOK_COL_MONEY, money)
                 put(DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY, categoryId)

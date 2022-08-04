@@ -10,7 +10,7 @@ class PaymentLocalDataSource @Inject constructor(
 ) : PaymentDataSource {
 
     override suspend fun findById(id: Int): Payment? {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = ?"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))
@@ -26,7 +26,7 @@ class PaymentLocalDataSource @Inject constructor(
     }
 
     override suspend fun findByName(name: String): Payment? {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_NAME} = ?"
             val cursor = database.rawQuery(sql, arrayOf(name))
@@ -43,7 +43,7 @@ class PaymentLocalDataSource @Inject constructor(
 
     override suspend fun findAll(): List<Payment> {
         val paymentList = mutableListOf<Payment>()
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val cursor = database.query(
                 DatabaseHelper.TABLE_PAYMENT,
                 arrayOf(DatabaseHelper.PAYMENT_COL_ID, DatabaseHelper.PAYMENT_COL_NAME),
@@ -71,7 +71,7 @@ class PaymentLocalDataSource @Inject constructor(
     }
 
     override suspend fun deleteById(list: List<Int>) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             list.forEach { id ->
                 database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = $id")
             }
@@ -79,7 +79,7 @@ class PaymentLocalDataSource @Inject constructor(
     }
 
     override suspend fun update(id: Int, name: String) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.PAYMENT_COL_NAME, name)
             }
@@ -88,7 +88,7 @@ class PaymentLocalDataSource @Inject constructor(
     }
 
     override suspend fun save(name: String) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.PAYMENT_COL_NAME, name)
             }
