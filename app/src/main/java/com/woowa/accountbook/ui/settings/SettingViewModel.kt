@@ -82,8 +82,8 @@ class SettingViewModel @Inject constructor(
             .map { it.id }
         paymentRepository.removePayments(selectedPayment)
             .onSuccess { result ->
-                if (result) _payments.value = _payments.value.filter { !it.isChecked }
-                else _errorMessage.value = "내역에서 사용되고 있는 결제수단이 존재합니다."
+                if (!result) _errorMessage.value = "내역에서 사용되고 있는 결제수단이 존재합니다."
+                else getPayments()
 
             }
             .onFailure {
@@ -99,9 +99,8 @@ class SettingViewModel @Inject constructor(
                     .map { it.id!! }
                 categoryRepository.removeCategories(selectedCategory)
                     .onSuccess { result ->
-                        if (result) _expenseCategories.value =
-                            _expenseCategories.value.filter { !it.isChecked }
-                        else _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                        if (!result) _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                        else getExpenseCategories()
                     }
                     .onFailure {
                         _errorMessage.value = "삭제 중 에러가 발생했습니다."
@@ -113,9 +112,8 @@ class SettingViewModel @Inject constructor(
                     .map { it.id!! }
                 categoryRepository.removeCategories(selectedCategory)
                     .onSuccess { result ->
-                        if (result) _incomeCategories.value =
-                            _incomeCategories.value.filter { !it.isChecked }
-                        else _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                        if (!result) _errorMessage.value = "내역에서 사용되고 있는 카테고리가 존재합니다."
+                        else getIncomeCategories()
                     }
                     .onFailure {
                         _errorMessage.value = "삭제 중 에러가 발생했습니다."

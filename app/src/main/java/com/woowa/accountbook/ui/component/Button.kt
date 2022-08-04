@@ -80,8 +80,7 @@ fun LeftCornerCheckButton(
 ) {
     AccountBookButton(
         modifier = Modifier
-            .width(200.dp)
-            .height(30.dp),
+            .width(200.dp),
         shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp),
         enabled = enabled,
         enabledBackgroundColor = LightPurple.copy(alpha = 0.5f),
@@ -133,8 +132,7 @@ fun RightCornerCheckButton(
 ) {
     AccountBookButton(
         modifier = Modifier
-            .width(200.dp)
-            .height(30.dp),
+            .width(200.dp),
         shape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         enabled = enabled,
         enabledBackgroundColor = LightPurple.copy(alpha = 0.5f),

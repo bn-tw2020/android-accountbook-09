@@ -9,12 +9,12 @@ import javax.inject.Inject
 class DatabaseHelper @Inject constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    init {
+        initializeData(context)
+    }
+
     override fun onCreate(database: SQLiteDatabase?) {
         database?.apply {
-            initializeData()
-            execSQL("DROP TABLE IF EXISTS $TABLE_PAYMENT")
-            execSQL("DROP TABLE IF EXISTS $TABLE_CATEGORY")
-            execSQL("DROP TABLE IF EXISTS $TABLE_ACCOUNT_BOOK")
             execSQL(createPaymentQuery)
             execSQL(createCategoryQuery)
             execSQL(createAccountBookQuery)
