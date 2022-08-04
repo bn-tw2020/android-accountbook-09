@@ -69,11 +69,12 @@ class SettingViewModel @Inject constructor(
         getPayments()
     }
 
-    fun updateCategory(id: Int, name: String, color: Color, isIncome: Boolean) = viewModelScope.launch {
-        categoryRepository.updateCategory(id, name, color.toHex(), isIncome)
-        getIncomeCategories()
-        getExpenseCategories()
-    }
+    fun updateCategory(id: Int, name: String, color: Color, isIncome: Boolean) =
+        viewModelScope.launch {
+            categoryRepository.updateCategory(id, name, color.toHex(), isIncome)
+            getIncomeCategories()
+            getExpenseCategories()
+        }
 
     fun removePayments() = viewModelScope.launch {
         val selectedPayment = _payments.value
