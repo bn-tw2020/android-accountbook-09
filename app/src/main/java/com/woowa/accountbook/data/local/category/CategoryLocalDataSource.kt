@@ -10,7 +10,7 @@ class CategoryLocalDataSource @Inject constructor(
 ) : CategoryDataSource {
 
     override suspend fun findById(id: Int): Category? {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_ID} = ?"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))
@@ -28,7 +28,7 @@ class CategoryLocalDataSource @Inject constructor(
     }
 
     override suspend fun findByNameAndIsIncome(name: String, isIncome: String): Category? {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_NAME} = ? AND ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
             val cursor = database.rawQuery(sql, arrayOf(name, isIncome))
@@ -47,7 +47,7 @@ class CategoryLocalDataSource @Inject constructor(
 
     override suspend fun findByType(type: String): List<Category> {
         val categoryList = mutableListOf<Category>()
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_IS_INCOME} = ?"
             val cursor = database.rawQuery(sql, arrayOf(type))
@@ -72,7 +72,7 @@ class CategoryLocalDataSource @Inject constructor(
     }
 
     override suspend fun deleteById(list: List<Int>) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             list.forEach { id ->
                 database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_CATEGORY} WHERE ${DatabaseHelper.CATEGORY_COL_ID} = $id")
             }
@@ -80,7 +80,7 @@ class CategoryLocalDataSource @Inject constructor(
     }
 
     override suspend fun update(id: Int, name: String, isIncome: String, color: String) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.CATEGORY_COL_NAME, name)
                 put(DatabaseHelper.CATEGORY_COL_IS_INCOME, isIncome)
@@ -91,7 +91,7 @@ class CategoryLocalDataSource @Inject constructor(
     }
 
     override suspend fun save(name: String, color: String, isIncome: Boolean) {
-        databaseHelper.writableDatabase.use { database ->
+        databaseHelper.writableDatabase.let { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.CATEGORY_COL_NAME, name)
                 put(DatabaseHelper.CATEGORY_COL_COLOR, color)

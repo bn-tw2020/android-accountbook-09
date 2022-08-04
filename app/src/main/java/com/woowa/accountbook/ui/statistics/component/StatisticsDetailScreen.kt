@@ -137,7 +137,6 @@ private fun ExpenseGraph(expenseHistories: List<History>, id: Int?) {
             val lineData = LineData(dataSet)
 
             dataSet.lineWidth = 3f
-            dataSet.circleRadius = 0f
             dataSet.valueTextSize = 10f
             dataSet.setDrawValues(false)
             dataSet.setDrawCircleHole(false)

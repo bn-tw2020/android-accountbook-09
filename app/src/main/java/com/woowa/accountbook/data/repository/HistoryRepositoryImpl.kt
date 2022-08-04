@@ -5,30 +5,39 @@ import com.woowa.accountbook.data.local.category.CategoryDataSource
 import com.woowa.accountbook.data.local.history.HistoryDataSource
 import com.woowa.accountbook.data.local.payment.PaymentDataSource
 import com.woowa.accountbook.domain.repository.history.HistoryRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HistoryRepositoryImpl @Inject constructor(
     private val historyDataSource: HistoryDataSource,
     private val categoryDataSource: CategoryDataSource,
-    private val paymentDataSource: PaymentDataSource
+    private val paymentDataSource: PaymentDataSource,
+    private val ioDispatcher: CoroutineDispatcher
 ) : HistoryRepository {
 
     override suspend fun getHistory(id: Int): Result<History?> {
         return runCatching {
-            historyDataSource.findById(id)
+            withContext(ioDispatcher) {
+                historyDataSource.findById(id)
+            }
         }
     }
 
     override suspend fun getExpenseHistories(year: Int): Result<List<History>> {
         return runCatching {
-            val yearHistories = historyDataSource.findByAll(year)
-            yearHistories.filter { it.category?.isIncome == 0 }
+            withContext(ioDispatcher) {
+                val yearHistories = historyDataSource.findByAll(year)
+                yearHistories.filter { it.category?.isIncome == 0 }
+            }
         }
     }
 
     override suspend fun getHistoriesByMonth(month: Int): Result<List<History>> {
         return runCatching {
-            historyDataSource.findByMonth(month.toString())
+            withContext(ioDispatcher) {
+                historyDataSource.findByMonth(month.toString())
+            }
         }
     }
 
@@ -37,13 +46,17 @@ class HistoryRepositoryImpl @Inject constructor(
         type: Boolean
     ): Result<List<History>> {
         return runCatching {
-            historyDataSource.findByMonthAndType(month.toString(), type)
+            withContext(ioDispatcher) {
+                historyDataSource.findByMonthAndType(month.toString(), type)
+            }
         }
     }
 
     override suspend fun removeHistories(list: List<Int>) {
         runCatching {
-            historyDataSource.deleteById(list)
+            withContext(ioDispatcher) {
+                historyDataSource.deleteById(list)
+            }
         }
     }
 
@@ -58,16 +71,18 @@ class HistoryRepositoryImpl @Inject constructor(
         paymentId: Int
     ) {
         runCatching {
-            historyDataSource.update(
-                id,
-                money,
-                categoryId,
-                content,
-                year,
-                month,
-                day,
-                paymentId
-            )
+            withContext(ioDispatcher) {
+                historyDataSource.update(
+                    id,
+                    money,
+                    categoryId,
+                    content,
+                    year,
+                    month,
+                    day,
+                    paymentId
+                )
+            }
         }
     }
 
@@ -81,19 +96,21 @@ class HistoryRepositoryImpl @Inject constructor(
         paymentId: Int
     ) {
         runCatching {
-            if (categoryId != null) {
-                val category = categoryDataSource.findById(categoryId) ?: return
+            withContext(ioDispatcher) {
+                if (categoryId != null) {
+                    val category = categoryDataSource.findById(categoryId) ?: return@withContext
+                }
+                val payment = paymentDataSource.findById(paymentId) ?: return@withContext
+                historyDataSource.save(
+                    money,
+                    categoryId,
+                    content,
+                    year,
+                    month,
+                    day,
+                    paymentId
+                )
             }
-            val payment = paymentDataSource.findById(paymentId) ?: return
-            historyDataSource.save(
-                money,
-                categoryId,
-                content,
-                year,
-                month,
-                day,
-                paymentId
-            )
         }
     }
 }
