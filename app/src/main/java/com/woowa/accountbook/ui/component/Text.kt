@@ -116,12 +116,14 @@ fun InputNumberText(
     BasicTextField(
         value = price,
         onValueChange = {
-            if (it == "") {
-                onChanged("")
-                return@BasicTextField
+            if (it.length < 10) {
+                if (it == "") {
+                    onChanged("")
+                    return@BasicTextField
+                }
+                val amount = it.replace(("[^\\d.]").toRegex(), "")
+                onChanged(amount)
             }
-            val amount = it.replace(("[^\\d.]").toRegex(), "")
-            onChanged(amount)
         },
         decorationBox = { innerTextField ->
             if (price.isEmpty()) {
