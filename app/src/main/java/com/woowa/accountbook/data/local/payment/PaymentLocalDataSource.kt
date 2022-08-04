@@ -9,7 +9,7 @@ class PaymentLocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
 ) : PaymentDataSource {
 
-    override fun findById(id: Int): Payment? {
+    override suspend fun findById(id: Int): Payment? {
         databaseHelper.readableDatabase.use { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = ?"
@@ -25,7 +25,7 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findByName(name: String): Payment? {
+    override suspend fun findByName(name: String): Payment? {
         databaseHelper.readableDatabase.use { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_NAME} = ?"
@@ -41,7 +41,7 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findAll(): List<Payment> {
+    override suspend fun findAll(): List<Payment> {
         val paymentList = mutableListOf<Payment>()
         databaseHelper.readableDatabase.use { database ->
             val cursor = database.query(
@@ -70,7 +70,7 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
-    override fun deleteById(list: List<Int>) {
+    override suspend fun deleteById(list: List<Int>) {
         databaseHelper.writableDatabase.use { database ->
             list.forEach { id ->
                 database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_PAYMENT} WHERE ${DatabaseHelper.PAYMENT_COL_ID} = $id")
@@ -78,7 +78,7 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
-    override fun update(id: Int, name: String) {
+    override suspend fun update(id: Int, name: String) {
         databaseHelper.writableDatabase.use { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.PAYMENT_COL_NAME, name)
@@ -87,7 +87,7 @@ class PaymentLocalDataSource @Inject constructor(
         }
     }
 
-    override fun save(name: String) {
+    override suspend fun save(name: String) {
         databaseHelper.writableDatabase.use { database ->
             val contentValues = ContentValues().apply {
                 put(DatabaseHelper.PAYMENT_COL_NAME, name)

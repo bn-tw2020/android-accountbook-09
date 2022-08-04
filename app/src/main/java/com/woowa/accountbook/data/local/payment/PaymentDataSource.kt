@@ -4,10 +4,10 @@ import com.woowa.accountbook.data.entitiy.Payment
 
 interface PaymentDataSource {
 
-    fun findById(id: Int): Payment?
-    fun findByName(name: String): Payment?
-    fun findAll(): List<Payment>
-    fun deleteById(list: List<Int>)
-    fun update(id: Int, name: String)
-    fun save(name: String)
+    suspend fun findById(id: Int): Payment?
+    suspend fun findByName(name: String): Payment?
+    suspend fun findAll(): List<Payment>
+    suspend fun deleteById(list: List<Int>)
+    suspend fun update(id: Int, name: String)
+    suspend fun save(name: String)
 }

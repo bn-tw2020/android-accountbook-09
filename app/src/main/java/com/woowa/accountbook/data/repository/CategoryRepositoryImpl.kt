@@ -11,11 +11,13 @@ class CategoryRepositoryImpl @Inject constructor(
     private val categoryDataSource: CategoryDataSource
 ) : CategoryRepository {
 
-    override fun getCategoriesByType(type: String): Result<List<Category>> {
-        return runCatching { categoryDataSource.findByType(type) }
+    override suspend fun getCategoriesByType(type: String): Result<List<Category>> {
+        return runCatching {
+            categoryDataSource.findByType(type)
+        }
     }
 
-    override fun removeCategories(list: List<Int>): Result<Boolean> {
+    override suspend fun removeCategories(list: List<Int>): Result<Boolean> {
         return runCatching {
             val result = list.asSequence()
                 .map { id -> historyDataSource.existsByCategoryId(id) }
@@ -29,13 +31,13 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun updateCategory(id: Int, name: String, color: String, isIncome: Boolean) {
+    override suspend fun updateCategory(id: Int, name: String, color: String, isIncome: Boolean) {
         runCatching {
             categoryDataSource.update(id, name, if (isIncome) "1" else "0", color)
         }
     }
 
-    override fun saveCategory(name: String, color: String, isIncome: Boolean) {
+    override suspend fun saveCategory(name: String, color: String, isIncome: Boolean) {
         runCatching {
             val category =
                 categoryDataSource.findByNameAndIsIncome(name, if (isIncome) "1" else "0")

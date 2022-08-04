@@ -11,11 +11,13 @@ class PaymentRepositoryImpl @Inject constructor(
     private val paymentDataSource: PaymentDataSource
 ) : PaymentRepository {
 
-    override fun getPayments(): Result<List<Payment>> {
-        return runCatching { paymentDataSource.findAll() }
+    override suspend fun getPayments(): Result<List<Payment>> {
+        return runCatching {
+            paymentDataSource.findAll()
+        }
     }
 
-    override fun removePayments(list: List<Int>): Result<Boolean> {
+    override suspend fun removePayments(list: List<Int>): Result<Boolean> {
         return runCatching {
             val result = list.asSequence()
                 .map { id -> historyDataSource.existsByPaymentId(id) }
@@ -29,13 +31,13 @@ class PaymentRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun updatePayment(id: Int, name: String) {
+    override suspend fun updatePayment(id: Int, name: String) {
         runCatching {
             paymentDataSource.update(id, name)
         }
     }
 
-    override fun savePayment(name: String) {
+    override suspend fun savePayment(name: String) {
         runCatching {
             val payment = paymentDataSource.findByName(name)
             if (payment == null)

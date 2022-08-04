@@ -1,6 +1,5 @@
 package com.woowa.accountbook.ui.calendar
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.woowa.accountbook.common.NOW_DAY
 import com.woowa.accountbook.common.NOW_MONTH
@@ -31,7 +30,6 @@ class CalendarViewModel @Inject constructor(private val calendar: CustomCalendar
 
     fun selectedDate(dateItem: DateItem) {
         _selectedDate.value = dateItem
-        Log.d("test", "selectedDate: ${selectedDate.value?.date}")
     }
 
     fun setYearAndMonth(year: Int, month: Int) {

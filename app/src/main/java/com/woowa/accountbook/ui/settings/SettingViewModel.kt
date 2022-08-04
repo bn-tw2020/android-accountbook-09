@@ -2,6 +2,7 @@ package com.woowa.accountbook.ui.settings
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.woowa.accountbook.common.toHex
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.Payment
@@ -10,6 +11,7 @@ import com.woowa.accountbook.domain.repository.payment.PaymentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,44 +38,44 @@ class SettingViewModel @Inject constructor(
         getIncomeCategories()
     }
 
-    private fun getPayments() {
+    private fun getPayments() = viewModelScope.launch {
         val paymentList = paymentRepository.getPayments().getOrThrow()
         _payments.value = paymentList
     }
 
-    private fun getIncomeCategories() {
+    private fun getIncomeCategories() = viewModelScope.launch {
         val categoryList = categoryRepository.getCategoriesByType("1").getOrThrow()
         _incomeCategories.value = categoryList
     }
 
-    private fun getExpenseCategories() {
+    private fun getExpenseCategories() = viewModelScope.launch {
         val categoryList = categoryRepository.getCategoriesByType("0").getOrThrow()
         _expenseCategories.value = categoryList
     }
 
-    fun savePayment(name: String) {
+    fun savePayment(name: String) = viewModelScope.launch {
         paymentRepository.savePayment(name)
         getPayments()
     }
 
-    fun saveCategory(name: String, isIncome: Boolean, color: Color) {
+    fun saveCategory(name: String, isIncome: Boolean, color: Color) = viewModelScope.launch {
         categoryRepository.saveCategory(name, color.toHex(), isIncome)
         getIncomeCategories()
         getExpenseCategories()
     }
 
-    fun updatePayment(id: Int, name: String) {
+    fun updatePayment(id: Int, name: String) = viewModelScope.launch {
         paymentRepository.updatePayment(id, name)
         getPayments()
     }
 
-    fun updateCategory(id: Int, name: String, color: Color, isIncome: Boolean) {
+    fun updateCategory(id: Int, name: String, color: Color, isIncome: Boolean) = viewModelScope.launch {
         categoryRepository.updateCategory(id, name, color.toHex(), isIncome)
         getIncomeCategories()
         getExpenseCategories()
     }
 
-    fun removePayments() {
+    fun removePayments() = viewModelScope.launch {
         val selectedPayment = _payments.value
             .filter { it.isChecked }
             .map { it.id }
@@ -88,7 +90,7 @@ class SettingViewModel @Inject constructor(
             }
     }
 
-    fun removeCategories(type: String) {
+    fun removeCategories(type: String) = viewModelScope.launch {
         when (type) {
             "expense" -> {
                 val selectedCategory = _expenseCategories.value
