@@ -13,27 +13,41 @@ class HistoryRepositoryImpl @Inject constructor(
     private val paymentDataSource: PaymentDataSource
 ) : HistoryRepository {
 
-    override fun getHistory(id: Int): Result<History?> {
-        return runCatching { historyDataSource.findById(id) }
+    override suspend fun getHistory(id: Int): Result<History?> {
+        return runCatching {
+            historyDataSource.findById(id)
+        }
     }
 
-    override fun getHistories(): Result<List<History>> {
-        return runCatching { historyDataSource.findByAll() }
+    override suspend fun getExpenseHistories(year: Int): Result<List<History>> {
+        return runCatching {
+            val yearHistories = historyDataSource.findByAll(year)
+            yearHistories.filter { it.category?.isIncome == 0 }
+        }
     }
 
-    override fun getHistoriesByMonth(month: Int): Result<List<History>> {
-        return runCatching { historyDataSource.findByMonth(month.toString()) }
+    override suspend fun getHistoriesByMonth(month: Int): Result<List<History>> {
+        return runCatching {
+            historyDataSource.findByMonth(month.toString())
+        }
     }
 
-    override fun getHistoriesMonthAndType(month: Int, type: Boolean): Result<List<History>> {
-        return runCatching { historyDataSource.findByMonthAndType(month.toString(), type) }
+    override suspend fun getHistoriesMonthAndType(
+        month: Int,
+        type: Boolean
+    ): Result<List<History>> {
+        return runCatching {
+            historyDataSource.findByMonthAndType(month.toString(), type)
+        }
     }
 
-    override fun removeHistories(list: List<Int>) {
-        runCatching { historyDataSource.deleteById(list) }
+    override suspend fun removeHistories(list: List<Int>) {
+        runCatching {
+            historyDataSource.deleteById(list)
+        }
     }
 
-    override fun updateHistory(
+    override suspend fun updateHistory(
         id: Int,
         money: Int,
         categoryId: Int?,
@@ -57,7 +71,7 @@ class HistoryRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun saveHistory(
+    override suspend fun saveHistory(
         money: Int,
         categoryId: Int?,
         content: String,
