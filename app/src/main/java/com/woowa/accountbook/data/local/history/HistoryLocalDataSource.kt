@@ -55,7 +55,7 @@ class HistoryLocalDataSource @Inject constructor(
     }
 
     override fun existsByCategoryId(id: Int): Boolean {
-        databaseHelper.readableDatabase.let { database ->
+        databaseHelper.readableDatabase.use { database ->
             val sql =
                 "SELECT EXISTS (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ?) as exist"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))

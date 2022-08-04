@@ -29,8 +29,7 @@ class HistoryViewModel @Inject constructor(
     private val _history = MutableStateFlow<List<History>>(emptyList())
     val history: StateFlow<List<History>> get() = _history
 
-    private val _currentHistory = MutableStateFlow<History?>(null)
-    val currentHistory: StateFlow<History?> get() = _currentHistory
+    var currentHistory: History? = null
 
     private val _payments = MutableStateFlow<List<Payment>>(emptyList())
     val payments: StateFlow<List<Payment>> get() = _payments
@@ -49,12 +48,6 @@ class HistoryViewModel @Inject constructor(
 
     fun getHistory() {
         _history.value = totalHistory.value
-    }
-
-    fun getHistory(id: Int) = viewModelScope.launch {
-        _currentHistory.value = null
-        if (id == -1) return@launch
-        _currentHistory.value = historyRepository.getHistory(id).getOrThrow()
     }
 
     fun getExpenseHistories(year: Int) = viewModelScope.launch {

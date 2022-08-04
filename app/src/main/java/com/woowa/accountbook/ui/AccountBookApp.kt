@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -63,7 +62,6 @@ fun AccountBookApp() {
                 modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 accountBookNavGraph(
-                    navController = appState.navController,
                     snackbarHostState = appState.scaffoldState.snackbarHostState,
                     navigationUp = { appState.navigateUp() },
                     onClickedDetail = {
@@ -122,7 +120,6 @@ fun selectNavigation(tab: String, currentRoute: String): Boolean {
 }
 
 private fun NavGraphBuilder.accountBookNavGraph(
-    navController: NavController,
     snackbarHostState: SnackbarHostState,
     onClicked: (Int) -> Unit,
     onClickedDetail: (Int?) -> Unit,
@@ -214,7 +211,10 @@ private fun NavGraphBuilder.addHomeGraph(
         HistoryScreen(
             historyViewModel,
             calendarViewModel,
-            onClicked = { id -> onClicked(id) }
+            onClicked = { id, history ->
+                onClicked(id)
+                historyViewModel.currentHistory = history
+            }
         )
     }
     composable(Calendar.route) {

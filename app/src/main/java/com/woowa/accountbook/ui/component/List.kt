@@ -126,7 +126,7 @@ fun SettingItem(
 fun HistoryItem(
     history: History,
     isEdit: Boolean,
-    onClicked: (Int) -> Unit,
+    onClicked: (Int, History) -> Unit,
     onLongClicked: (Boolean, Int) -> Unit,
     onCheckedItem: (Boolean, Int) -> Unit
 ) {
@@ -134,7 +134,7 @@ fun HistoryItem(
     Row(
         modifier = Modifier
             .combinedClickable(
-                onClick = { if (!isEdit) onClicked(history.id) },
+                onClick = { if (!isEdit) onClicked(history.id, history) },
                 onLongClick = { onLongClicked(isEdit, history.id) }
             ),
         verticalAlignment = Alignment.CenterVertically
@@ -212,7 +212,7 @@ private fun HistoryItemDefaultPreview() {
             category = Category(
                 id = 1,
                 isIncome = 1,
-                name = "여가/문화",
+                name = "교통",
                 color = "#817DCE"
             ),
             payment = Payment(
@@ -223,7 +223,7 @@ private fun HistoryItemDefaultPreview() {
         isEdit = false,
         onLongClicked = { _, _ -> },
         onCheckedItem = { _, _ -> },
-        onClicked = {}
+        onClicked = {_, _ ->}
     )
 }
 
@@ -242,7 +242,7 @@ private fun HistoryItemEditCheckedPreview() {
             category = Category(
                 id = 1,
                 isIncome = 1,
-                name = "여가/문화",
+                name = "용돈",
                 color = "#817DCE"
             ),
             payment = Payment(
@@ -253,6 +253,6 @@ private fun HistoryItemEditCheckedPreview() {
         isEdit = true,
         onLongClicked = { _, _ -> },
         onCheckedItem = { _, _ -> },
-        onClicked = {}
+        onClicked = {_, _ ->}
     )
 }

@@ -29,10 +29,7 @@ fun RegistrationScreen(
     onSectionItemClicked: (Int?, String) -> Unit,
 ) {
     val updateMode = -1
-    historyViewModel.getHistory(id)
-    historyViewModel.getPayments()
-
-    val history = historyViewModel.currentHistory.collectAsState().value
+    val history = historyViewModel.currentHistory
     var isIncome = history?.category?.isIncome == 1
     var isExpense = history?.category?.isIncome == 0
     if (id == updateMode) {
