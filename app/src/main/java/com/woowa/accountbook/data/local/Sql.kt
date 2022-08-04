@@ -1,6 +1,8 @@
 package com.woowa.accountbook.data.local
 
 import android.content.ContentValues
+import android.content.Context
+import com.woowa.accountbook.data.local.DatabaseHelper.Companion.DATABASE_NAME
 
 internal val createPaymentQuery = """
             CREATE TABLE ${DatabaseHelper.TABLE_PAYMENT} (
@@ -33,7 +35,9 @@ internal val createAccountBookQuery = """
             )
         """.trimIndent()
 
-fun DatabaseHelper.initializeData() {
+fun DatabaseHelper.initializeData(context: Context) {
+    val dataBaseFileName = context.getDatabasePath(DATABASE_NAME)
+    if (dataBaseFileName.exists()) return
     savePayment("현대카드")
     savePayment("카카오뱅크 체크카드")
     saveCategory("교통", "#94D3CC", false)
