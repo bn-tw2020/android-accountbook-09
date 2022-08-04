@@ -12,7 +12,7 @@ class HistoryLocalDataSource @Inject constructor(
 ) : HistoryDataSource {
 
     override suspend fun findById(id: Int): History? {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_ID} = ?"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))
@@ -55,7 +55,7 @@ class HistoryLocalDataSource @Inject constructor(
     }
 
     override fun existsByCategoryId(id: Int): Boolean {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT EXISTS (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ?) as exist"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))
@@ -68,7 +68,7 @@ class HistoryLocalDataSource @Inject constructor(
     }
 
     override fun existsByPaymentId(id: Int): Boolean {
-        databaseHelper.readableDatabase.use { database ->
+        databaseHelper.readableDatabase.let { database ->
             val sql =
                 "SELECT EXISTS (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ?) as exist"
             val cursor = database.rawQuery(sql, arrayOf(id.toString()))
