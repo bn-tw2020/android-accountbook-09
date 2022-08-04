@@ -278,6 +278,7 @@ private fun ExpenseGraph(
             }
             dataSet.colors = categoryColorList
             pieChart.data = pieData
+            pieChart.animateY(1000, Easing.EaseInBack)
         }
     )
 }

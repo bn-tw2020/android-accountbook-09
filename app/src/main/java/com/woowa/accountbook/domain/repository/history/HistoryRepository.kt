@@ -3,12 +3,12 @@ package com.woowa.accountbook.domain.repository.history
 import com.woowa.accountbook.data.entitiy.History
 
 interface HistoryRepository {
-    fun getHistory(id: Int): Result<History?>
-    fun getHistories(): Result<List<History>>
-    fun getHistoriesByMonth(month: Int): Result<List<History>>
-    fun getHistoriesMonthAndType(month: Int, type: Boolean): Result<List<History>>
-    fun removeHistories(list: List<Int>)
-    fun updateHistory(
+    suspend fun getHistory(id: Int): Result<History?>
+    suspend fun getExpenseHistories(year: Int): Result<List<History>>
+    suspend fun getHistoriesByMonth(month: Int): Result<List<History>>
+    suspend fun getHistoriesMonthAndType(month: Int, type: Boolean): Result<List<History>>
+    suspend fun removeHistories(list: List<Int>)
+    suspend fun updateHistory(
         id: Int,
         money: Int,
         categoryId: Int?,
@@ -19,7 +19,7 @@ interface HistoryRepository {
         paymentId: Int
     )
 
-    fun saveHistory(
+    suspend fun saveHistory(
         money: Int,
         categoryId: Int?,
         content: String,

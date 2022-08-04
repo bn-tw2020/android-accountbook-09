@@ -11,7 +11,7 @@ class HistoryLocalDataSource @Inject constructor(
     private val databaseHelper: DatabaseHelper
 ) : HistoryDataSource {
 
-    override fun findById(id: Int): History? {
+    override suspend fun findById(id: Int): History? {
         databaseHelper.readableDatabase.use { database ->
             val sql =
                 "SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_ID} = ?"
@@ -80,12 +80,12 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findByAll(): List<History> {
+    override suspend fun findByAll(year: Int): List<History> {
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->
             val sql =
-                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T, ${DatabaseHelper.TABLE_CATEGORY}, ${DatabaseHelper.TABLE_PAYMENT} WHERE T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} AND T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
-            val cursor = database.rawQuery(sql, null)
+            "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.TABLE_ACCOUNT_BOOK}.${DatabaseHelper.ACCOUNT_BOOK_COL_YEAR} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
+            val cursor = database.rawQuery(sql, arrayOf(year.toString()))
             return cursor.use {
                 while (it.moveToNext()) {
                     val id = it.getInt(0)
@@ -126,7 +126,7 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findByMonth(month: String): List<History> {
+    override suspend fun findByMonth(month: String): List<History> {
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->
             val sql =
@@ -171,7 +171,7 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun findByMonthAndType(month: String, type: Boolean): List<History> {
+    override suspend fun findByMonthAndType(month: String, type: Boolean): List<History> {
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->
             val isIncome = if (type) "1" else "0"
@@ -218,7 +218,7 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun deleteById(list: List<Int>) {
+    override suspend fun deleteById(list: List<Int>) {
         databaseHelper.writableDatabase.use { database ->
             list.forEach { id ->
                 database.execSQL("DELETE FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.ACCOUNT_BOOK_COL_ID} = $id")
@@ -226,7 +226,7 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun update(
+    override suspend fun update(
         id: Int,
         money: Int,
         categoryId: Int?,
@@ -250,7 +250,7 @@ class HistoryLocalDataSource @Inject constructor(
         }
     }
 
-    override fun save(
+    override suspend fun save(
         money: Int,
         categoryId: Int?,
         content: String,

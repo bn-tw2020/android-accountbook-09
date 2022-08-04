@@ -1,6 +1,7 @@
 package com.woowa.accountbook.ui.history
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.woowa.accountbook.data.entitiy.Category
 import com.woowa.accountbook.data.entitiy.History
 import com.woowa.accountbook.data.entitiy.Payment
@@ -10,6 +11,7 @@ import com.woowa.accountbook.domain.repository.payment.PaymentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,6 +21,9 @@ class HistoryViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) :
     ViewModel() {
+
+    private val _yearHistory = MutableStateFlow<List<History>>(emptyList())
+    val yearHistory: StateFlow<List<History>> get() = _yearHistory
 
     val totalHistory = MutableStateFlow<List<History>>(emptyList())
     private val _history = MutableStateFlow<List<History>>(emptyList())
@@ -37,7 +42,7 @@ class HistoryViewModel @Inject constructor(
         getPayments()
     }
 
-    fun initHistory(month: Int) {
+    fun initHistory(month: Int) = viewModelScope.launch {
         val result = historyRepository.getHistoriesByMonth(month).getOrThrow()
         totalHistory.value = result
     }
@@ -46,10 +51,14 @@ class HistoryViewModel @Inject constructor(
         _history.value = totalHistory.value
     }
 
-    fun getHistory(id: Int) {
+    fun getHistory(id: Int) = viewModelScope.launch {
         _currentHistory.value = null
-        if (id == -1) return
+        if (id == -1) return@launch
         _currentHistory.value = historyRepository.getHistory(id).getOrThrow()
+    }
+
+    fun getExpenseHistories(year: Int) = viewModelScope.launch {
+        _yearHistory.value = historyRepository.getExpenseHistories(year).getOrThrow()
     }
 
     fun getIncomeHistory() {
@@ -66,12 +75,12 @@ class HistoryViewModel @Inject constructor(
         _history.value = emptyList()
     }
 
-    fun getHistoryMonthAndType(month: Int, type: Boolean) {
+    fun getHistoryMonthAndType(month: Int, type: Boolean) = viewModelScope.launch {
         val result = historyRepository.getHistoriesMonthAndType(month, type).getOrThrow()
         _history.value = result
     }
 
-    fun removeHistory() {
+    fun removeHistory() = viewModelScope.launch {
         val selectedHistory = _history.value
             .filter { it.isChecked }
             .map { it.id }
@@ -87,7 +96,7 @@ class HistoryViewModel @Inject constructor(
         month: Int,
         day: Int,
         paymentId: Int
-    ) {
+    ) = viewModelScope.launch {
         historyRepository.saveHistory(money, categoryId, content, year, month, day, paymentId)
     }
 
@@ -100,16 +109,16 @@ class HistoryViewModel @Inject constructor(
         month: Int,
         day: Int,
         paymentId: Int
-    ) {
+    ) = viewModelScope.launch {
         historyRepository.updateHistory(id, money, categoryId, content, year, month, day, paymentId)
     }
 
-    fun getPayments() {
+    fun getPayments() = viewModelScope.launch {
         val paymentList = paymentRepository.getPayments().getOrThrow()
         _payments.value = paymentList
     }
 
-    fun getCategories(type: String) {
+    fun getCategories(type: String) = viewModelScope.launch {
         val categoryList = categoryRepository.getCategoriesByType(type).getOrThrow()
         _categories.value = categoryList
     }

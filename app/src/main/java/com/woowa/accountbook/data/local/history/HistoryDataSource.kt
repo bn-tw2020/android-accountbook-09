@@ -4,14 +4,14 @@ import com.woowa.accountbook.data.entitiy.History
 
 interface HistoryDataSource {
 
-    fun findById(id: Int): History?
+    suspend fun findById(id: Int): History?
     fun existsByCategoryId(id: Int): Boolean
     fun existsByPaymentId(id: Int): Boolean
-    fun findByAll(): List<History>
-    fun findByMonth(month: String): List<History>
-    fun findByMonthAndType(month: String, type: Boolean): List<History>
-    fun deleteById(list: List<Int>)
-    fun update(
+    suspend fun findByAll(year: Int): List<History>
+    suspend fun findByMonth(month: String): List<History>
+    suspend fun findByMonthAndType(month: String, type: Boolean): List<History>
+    suspend fun deleteById(list: List<Int>)
+    suspend fun update(
         id: Int,
         money: Int,
         categoryId: Int?,
@@ -22,7 +22,7 @@ interface HistoryDataSource {
         paymentId: Int
     )
 
-    fun save(
+    suspend fun save(
         money: Int,
         categoryId: Int?,
         content: String,
