@@ -11,6 +11,7 @@ class DatabaseHelper @Inject constructor(context: Context) :
 
     override fun onCreate(database: SQLiteDatabase?) {
         database?.apply {
+            initializeData()
             execSQL("DROP TABLE IF EXISTS $TABLE_PAYMENT")
             execSQL("DROP TABLE IF EXISTS $TABLE_CATEGORY")
             execSQL("DROP TABLE IF EXISTS $TABLE_ACCOUNT_BOOK")

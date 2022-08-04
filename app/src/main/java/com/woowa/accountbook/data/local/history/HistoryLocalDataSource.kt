@@ -84,7 +84,7 @@ class HistoryLocalDataSource @Inject constructor(
         val historyList = mutableListOf<History>()
         databaseHelper.readableDatabase.use { database ->
             val sql =
-            "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.TABLE_ACCOUNT_BOOK}.${DatabaseHelper.ACCOUNT_BOOK_COL_YEAR} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
+                "SELECT * FROM (SELECT * FROM ${DatabaseHelper.TABLE_ACCOUNT_BOOK} WHERE ${DatabaseHelper.TABLE_ACCOUNT_BOOK}.${DatabaseHelper.ACCOUNT_BOOK_COL_YEAR} = ? ORDER BY ${DatabaseHelper.ACCOUNT_BOOK_COL_MONTH} DESC) as T LEFT JOIN ${DatabaseHelper.TABLE_CATEGORY} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_CATEGORY} = ${DatabaseHelper.TABLE_CATEGORY}.${DatabaseHelper.CATEGORY_COL_ID} LEFT JOIN ${DatabaseHelper.TABLE_PAYMENT} ON T.${DatabaseHelper.ACCOUNT_BOOK_COL_PAYMENT} = ${DatabaseHelper.TABLE_PAYMENT}.${DatabaseHelper.PAYMENT_COL_ID}"
             val cursor = database.rawQuery(sql, arrayOf(year.toString()))
             return cursor.use {
                 while (it.moveToNext()) {
