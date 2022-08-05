@@ -40,6 +40,7 @@ fun HistoryScreen(
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.collectAsState().value
     historyViewModel.initHistory(month)
+    val histories = historyViewModel.history.collectAsState().value
     onClickFilterButton(
         inComeIsChecked,
         expenseIsChecked,
@@ -114,7 +115,6 @@ fun HistoryScreen(
                 .background(LightPurple)
         )
         val totalHistory = historyViewModel.totalHistory.collectAsState().value
-        val histories = historyViewModel.history.collectAsState().value
 
         if (inComeIsChecked.value && !expenseIsChecked.value) historyViewModel.getIncomeHistory()
         else if (!inComeIsChecked.value && expenseIsChecked.value) historyViewModel.getExpenseHistory()
