@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -69,7 +70,13 @@ dependencies {
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle_viewmodel"
     kapt "androidx.hilt:hilt-compiler:$hilt_compiler"
 
+    // number picker
     implementation "com.chargemap.compose:numberpicker:1.0.3"
 
+    // mpChart
     implementation "com.github.PhilJay:MPAndroidChart:v3.1.0"
+
+    // firebase
+    implementation platform("com.google.firebase:firebase-bom:30.3.1")
+    implementation 'com.google.firebase:firebase-analytics'
 }
