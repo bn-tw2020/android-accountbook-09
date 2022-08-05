@@ -38,7 +38,7 @@ fun HistoryScreen(
     val expenseIsChecked = rememberSaveable { mutableStateOf(false) }
     val editMode = remember { mutableStateOf(false) }
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
-    val (year, month) = calendarViewModel.yearMonthPair.value
+    val (year, month) = calendarViewModel.yearMonthPair.collectAsState().value
     historyViewModel.initHistory(month)
     onClickFilterButton(
         inComeIsChecked,
