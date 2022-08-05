@@ -21,11 +21,11 @@ import com.woowa.accountbook.ui.theme.Typography
 @Composable
 fun AccountBookAppBar(
     title: String,
-    navigationIcon: ImageVector?,
-    onNavigationClicked: () -> Unit,
-    actionIcon: ImageVector?,
+    navigationIcon: ImageVector? = null,
+    onNavigationClicked: () -> Unit = {},
+    actionIcon: ImageVector? = null,
     actionIconColor: Color = LocalContentColor.current.copy(alpha = LocalContentAlpha.current),
-    onActionClicked: () -> Unit,
+    onActionClicked: () -> Unit = {},
     backgroundColor: Color = OffWhite,
     contentColor: Color = Purple,
     dialog: @Composable (Boolean, (Boolean) -> Unit) -> Unit = { _, _ -> }
@@ -34,6 +34,7 @@ fun AccountBookAppBar(
     TopAppBar(
         backgroundColor = backgroundColor,
         contentColor = contentColor,
+        elevation = 0.dp,
         title = {
             Text(
                 modifier = when (actionIcon) {

@@ -3,16 +3,18 @@ package com.woowa.accountbook.data.local
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import javax.inject.Inject
 
 
-class DatabaseHelper(context: Context) :
+class DatabaseHelper @Inject constructor(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+    init {
+        initializeData(context)
+    }
 
     override fun onCreate(database: SQLiteDatabase?) {
         database?.apply {
-            execSQL("DROP TABLE IF EXISTS $TABLE_PAYMENT")
-            execSQL("DROP TABLE IF EXISTS $TABLE_CATEGORY")
-            execSQL("DROP TABLE IF EXISTS $TABLE_ACCOUNT_BOOK")
             execSQL(createPaymentQuery)
             execSQL(createCategoryQuery)
             execSQL(createAccountBookQuery)

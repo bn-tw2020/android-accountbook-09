@@ -7,7 +7,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Divider
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,14 +31,23 @@ import com.woowa.accountbook.ui.theme.*
 @Composable
 fun HistoryScreen(
     historyViewModel: HistoryViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    onClicked: (Int, History) -> Unit = { _, _ -> }
 ) {
+    val inComeIsChecked = rememberSaveable { mutableStateOf(true) }
+    val expenseIsChecked = rememberSaveable { mutableStateOf(false) }
+    val editMode = remember { mutableStateOf(false) }
     val yearAndMonth = calendarViewModel.yearAndMonth.collectAsState().value
     val (year, month) = calendarViewModel.yearMonthPair.value
-    historyViewModel.getHistory(month)
-    val inComeIsChecked = remember { mutableStateOf(true) }
-    val expenseIsChecked = remember { mutableStateOf(true) }
-    val editMode = remember { mutableStateOf(false) }
+    historyViewModel.initHistory(month)
+    onClickFilterButton(
+        inComeIsChecked,
+        expenseIsChecked,
+        onIncomeClicked = { historyViewModel.getIncomeHistory() },
+        onExpenseClicked = { historyViewModel.getExpenseHistory() },
+        onBothClicked = { historyViewModel.getHistory() },
+        onEmptyClicked = { historyViewModel.getEmptyHistory() }
+    )
 
     Scaffold(
         backgroundColor = OffWhite,
@@ -46,13 +59,13 @@ fun HistoryScreen(
                     onNavigationClicked = {
                         calendarViewModel.previousYearAndMonth()
                         inComeIsChecked.value = true
-                        expenseIsChecked.value = true
+                        expenseIsChecked.value = false
                     },
                     actionIcon = IconPack.RightArrow,
                     onActionClicked = {
                         calendarViewModel.nextYearAndMonth()
                         inComeIsChecked.value = true
-                        expenseIsChecked.value = true
+                        expenseIsChecked.value = false
                     },
                     dialog = { isShow, onDismissRequest ->
                         AccountBookDialog(
@@ -68,7 +81,7 @@ fun HistoryScreen(
                                         onDismissRequest(it)
                                         calendarViewModel.setYearAndMonth(year, month)
                                         inComeIsChecked.value = true
-                                        expenseIsChecked.value = true
+                                        expenseIsChecked.value = false
                                     }
                                 )
                             }
@@ -86,21 +99,34 @@ fun HistoryScreen(
                     },
                     actionIcon = IconPack.Trash,
                     actionIconColor = Red,
-                    onActionClicked = {}
+                    onActionClicked = {
+                        historyViewModel.removeHistory()
+                        editMode.value = !editMode.value
+                    }
                 )
             }
         }
     ) {
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(LightPurple)
+        )
+        val totalHistory = historyViewModel.totalHistory.collectAsState().value
         val histories = historyViewModel.history.collectAsState().value
-        val totalViewModel = historyViewModel.totalHistory.collectAsState().value
+
+        if (inComeIsChecked.value && !expenseIsChecked.value) historyViewModel.getIncomeHistory()
+        else if (!inComeIsChecked.value && expenseIsChecked.value) historyViewModel.getExpenseHistory()
+
         val groupHistory = histories.groupBy { it.day }
         val monthTotalIncome =
-            totalViewModel.filter { it.category.isIncome == 1 }.sumOf { it.money }
+            totalHistory.filter { it.category?.isIncome == 1 }.sumOf { it.money }
         val monthTotalExpense =
-            totalViewModel.filter { it.category.isIncome == 0 }.sumOf { it.money }
+            totalHistory.filter { it.category?.isIncome == 0 }.sumOf { it.money }
 
         Column(modifier = Modifier.fillMaxSize()) {
-            HistoryFilterButton(
+            FilterCheckBoxButton(
                 totalIncome = monthTotalIncome,
                 totalExpense = monthTotalExpense,
                 inComeIsChecked = inComeIsChecked,
@@ -112,7 +138,7 @@ fun HistoryScreen(
                 onExpenseButtonClicked = { expenseIsChecked.value = !expenseIsChecked.value },
                 onIncomeClicked = { historyViewModel.getIncomeHistory() },
                 onExpenseClicked = { historyViewModel.getExpenseHistory() },
-                onBothClicked = { historyViewModel.getHistory(month) },
+                onBothClicked = { historyViewModel.getHistory() },
                 onEmptyClicked = { historyViewModel.getEmptyHistory() }
             )
             if (groupHistory.isEmpty() || (!inComeIsChecked.value && !expenseIsChecked.value)) {
@@ -128,16 +154,14 @@ fun HistoryScreen(
                 HistoryLazyColumn(
                     groupHistory,
                     editMode.value,
+                    onClicked = { id, history -> onClicked(id, history) },
                     onLongClicked = { mode, id ->
                         editMode.value = !mode
                         historyViewModel.setCheckedItem(true, id)
                         if (!editMode.value) historyViewModel.resetCheckedHistory()
                     },
                     onCheckedItem = { isChecked, id ->
-                        historyViewModel.setCheckedItem(
-                            isChecked,
-                            id
-                        )
+                        historyViewModel.setCheckedItem(isChecked, id)
                     }
                 )
             }
@@ -146,18 +170,19 @@ fun HistoryScreen(
 }
 
 @Composable
-private fun HistoryLazyColumn(
+fun HistoryLazyColumn(
     groupHistory: Map<Int, List<History>>,
-    editMode: Boolean,
-    onLongClicked: (Boolean, Int) -> Unit,
-    onCheckedItem: (Boolean, Int) -> Unit
+    editMode: Boolean = false,
+    onClicked: (Int, History) -> Unit = { _, _ -> },
+    onLongClicked: (Boolean, Int) -> Unit = { _, _ -> },
+    onCheckedItem: (Boolean, Int) -> Unit = { _, _ -> }
 ) {
     LazyColumn {
         for (history in groupHistory) {
             val income =
-                history.value.filter { it.category.isIncome == 1 }.sumOf { it.money }
+                history.value.filter { it.category?.isIncome == 1 }.sumOf { it.money }
             val expense =
-                history.value.filter { it.category.isIncome == 0 }.sumOf { it.money }
+                history.value.filter { it.category?.isIncome == 0 }.sumOf { it.money }
             item {
                 HistoryItemTitle(
                     textColor = LightPurple,
@@ -171,6 +196,7 @@ private fun HistoryLazyColumn(
                 HistoryItem(
                     item,
                     editMode,
+                    onClicked = { id, history -> onClicked(id, history) },
                     onLongClicked = { editMode, id -> onLongClicked(editMode, id) },
                     onCheckedItem = { isChecked, id -> onCheckedItem(isChecked, id) }
                 )
@@ -186,112 +212,6 @@ private fun HistoryLazyColumn(
         }
 
     }
-}
-
-@Composable
-private fun HistoryFilterButton(
-    totalIncome: Int,
-    totalExpense: Int,
-    inComeIsChecked: MutableState<Boolean>,
-    expenseIsChecked: MutableState<Boolean>,
-    enabled: Boolean,
-    onIncomeCheckBoxClicked: (Boolean) -> Unit,
-    onExpenseCheckBoxClicked: (Boolean) -> Unit,
-    onIncomeButtonClicked: () -> Unit,
-    onExpenseButtonClicked: () -> Unit,
-    onIncomeClicked: () -> Unit,
-    onExpenseClicked: () -> Unit,
-    onBothClicked: () -> Unit,
-    onEmptyClicked: () -> Unit
-) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Row(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        LeftCornerCheckButton(
-            enabled = enabled,
-            checkBox = true,
-            checked = inComeIsChecked.value,
-            onClicked = {
-                onIncomeButtonClicked()
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            onCheckedChange = {
-                onIncomeCheckBoxClicked(it)
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            disabledColor = White,
-            checkedColor = White,
-            uncheckedColor = White,
-            checkmarkColor = Purple,
-            labelText = "수입",
-            labelPriceText = rawToMoneyFormat(totalIncome, 1)
-        )
-
-        RightCornerCheckButton(
-            enabled = enabled,
-            checkBox = true,
-            checked = expenseIsChecked.value,
-            onClicked = {
-                onExpenseButtonClicked()
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            onCheckedChange = {
-                onExpenseCheckBoxClicked(it)
-                onClickFilterButton(
-                    inComeIsChecked,
-                    expenseIsChecked,
-                    onBothClicked,
-                    onIncomeClicked,
-                    onExpenseClicked,
-                    onEmptyClicked
-                )
-            },
-            disabledColor = White,
-            checkedColor = White,
-            uncheckedColor = White,
-            checkmarkColor = Purple,
-            labelText = "지출",
-            labelPriceText = rawToMoneyFormat(totalExpense, 0)
-        )
-    }
-}
-
-private fun onClickFilterButton(
-    inComeIsChecked: MutableState<Boolean>,
-    expenseIsChecked: MutableState<Boolean>,
-    onBothClicked: () -> Unit,
-    onIncomeClicked: () -> Unit,
-    onExpenseClicked: () -> Unit,
-    onEmptyClicked: () -> Unit
-) {
-    if (inComeIsChecked.value && expenseIsChecked.value) onBothClicked()
-    else if (inComeIsChecked.value) onIncomeClicked()
-    else if (expenseIsChecked.value) onExpenseClicked()
-    else onEmptyClicked()
 }
 
 @Preview(showBackground = true)

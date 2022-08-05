@@ -5,17 +5,23 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
+import com.woowa.accountbook.ui.calendar.CalendarViewModel
 import com.woowa.accountbook.ui.calendar.component.CalendarScreen
 import com.woowa.accountbook.ui.component.AccountBookFloatingButton
+import com.woowa.accountbook.ui.history.HistoryViewModel
 import com.woowa.accountbook.ui.history.component.HistoryScreen
 import com.woowa.accountbook.ui.history.component.RegistrationScreen
 import com.woowa.accountbook.ui.iconpack.IconPack
 import com.woowa.accountbook.ui.iconpack.Plus
+import com.woowa.accountbook.ui.settings.SettingViewModel
+import com.woowa.accountbook.ui.settings.component.RegistrationSectionScreen
 import com.woowa.accountbook.ui.settings.component.SettingScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsDetailScreen
 import com.woowa.accountbook.ui.statistics.component.StatisticsScreen
@@ -29,32 +35,51 @@ fun AccountBookApp() {
         val appState = rememberAccountBookState()
         Scaffold(
             bottomBar = {
-                if (appState.shouldShowBottomBar) {
-                    AccountBookBottomBar(
-                        tabs = appState.bottomBarTabs,
-                        currentRoute = appState.currentRoute ?: HomeSections.HISTORY.route,
-                        navigateToRoute = { route -> appState.navigateToBottomBarRoute(route) }
-                    )
-                }
+                AccountBookBottomBar(
+                    tabs = appState.bottomBarTabs,
+                    currentRoute = appState.currentRoute ?: History.route,
+                    navigateToRoute = { route -> appState.navigateToBottomBarRoute(route) }
+                )
             },
             floatingActionButton = {
                 if (appState.shouldShowFloatingActionButton) {
                     AccountBookFloatingButton(
                         icon = IconPack.Plus,
-                        onClicked = { appState.navigateToRegistration(Destinations.REGISTRATION) }
+                        onClicked = { appState.navigateToRegistration(Registration.route) }
                     )
                 }
             },
             scaffoldState = appState.scaffoldState
         ) { innerPaddingModifier ->
+
+            val historyViewModel: HistoryViewModel = hiltViewModel()
+            val calendarViewModel: CalendarViewModel = hiltViewModel()
+            val settingViewModel: SettingViewModel = hiltViewModel()
+
             NavHost(
                 navController = appState.navController,
-                startDestination = Destinations.HOME,
+                startDestination = "home",
                 modifier = Modifier.padding(innerPaddingModifier)
             ) {
                 accountBookNavGraph(
-                    navController = appState.navController,
-                    navigationUp = { appState.navigateUp() }
+                    snackbarHostState = appState.scaffoldState.snackbarHostState,
+                    navigationUp = { appState.navigateUp() },
+                    onClickedDetail = {
+                        appState.navigateToStatisticsDetail(StatisticsDetail.route, it)
+                    },
+                    onClicked = { id ->
+                        appState.navigateToRegistration(Registration.route, id)
+                    },
+                    onSectionItemClicked = { id, type ->
+                        appState.navigateToSettingRegistration(
+                            SettingRegistration.route,
+                            id,
+                            type
+                        )
+                    },
+                    historyViewModel = historyViewModel,
+                    calendarViewModel = calendarViewModel,
+                    settingViewModel = settingViewModel,
                 )
             }
         }
@@ -63,7 +88,7 @@ fun AccountBookApp() {
 
 @Composable
 fun AccountBookBottomBar(
-    tabs: Array<HomeSections>,
+    tabs: List<HomeSections>,
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
 ) {
@@ -71,10 +96,11 @@ fun AccountBookBottomBar(
 
     BottomNavigation {
         tabs.forEach { section ->
-            val selected = section == currentSection || selectNavigation(currentRoute, section)
+            val selected =
+                section == currentSection || selectNavigation(section.route, currentRoute)
             BottomNavigationItem(
                 icon = {
-                    Icon(imageVector = section.icon, contentDescription = section.name)
+                    Icon(imageVector = section.icon, contentDescription = section.route)
                 },
                 label = {
                     Text(text = stringResource(id = section.title))
@@ -89,42 +115,119 @@ fun AccountBookBottomBar(
     }
 }
 
-fun selectNavigation(currentRoute: String, section: HomeSections): Boolean {
-    return when (section.route) {
-        HomeSections.HISTORY.route -> currentRoute.contains(HomeSections.HISTORY.route)
-        else -> false
-    }
+fun selectNavigation(tab: String, currentRoute: String): Boolean {
+    return currentRoute.contains(tab)
 }
 
 private fun NavGraphBuilder.accountBookNavGraph(
-    navController: NavController,
-    navigationUp: () -> Unit
+    snackbarHostState: SnackbarHostState,
+    onClicked: (Int) -> Unit,
+    onClickedDetail: (Int?) -> Unit,
+    onSectionItemClicked: (Int?, String) -> Unit,
+    navigationUp: () -> Unit,
+    historyViewModel: HistoryViewModel,
+    calendarViewModel: CalendarViewModel,
+    settingViewModel: SettingViewModel
 ) {
     navigation(
-        route = Destinations.HOME,
-        startDestination = HomeSections.HISTORY.route
+        route = "home",
+        startDestination = History.route
     ) {
-        addHomeGraph()
+        addHomeGraph(
+            historyViewModel,
+            calendarViewModel,
+            settingViewModel,
+            snackbarHostState,
+            onClicked = { id -> onClicked(id) },
+            onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) },
+            onClickedDetail = { onClickedDetail(it) }
+        )
     }
-    composable(route = Destinations.REGISTRATION) {
-        RegistrationScreen()
+    composable(
+        route = "${Registration.route}/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) { entry ->
+        val id = entry.arguments?.getInt("id") ?: -1
+        RegistrationScreen(
+            id,
+            historyViewModel,
+            calendarViewModel,
+            navigationUp = navigationUp,
+            onSectionItemClicked
+        )
     }
-    composable(route = Destinations.STATISTICS_DETAIL) {
-        StatisticsDetailScreen()
+    composable(route = "${StatisticsDetail.route}/{id}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            }
+        )
+    ) { entry ->
+        val id = entry.arguments?.getInt("id") ?: -1
+        StatisticsDetailScreen(
+            id,
+            historyViewModel,
+            calendarViewModel,
+            navigationUp = navigationUp
+        )
     }
+
+    composable(route = "${SettingRegistration.route}/{id}/{type}",
+        arguments = listOf(
+            navArgument("id") {
+                type = NavType.IntType
+            },
+            navArgument("type") {
+                type = NavType.StringType
+            }
+        )
+    ) { entry ->
+        val id = entry.arguments?.getInt("id") ?: -1
+        val type = entry.arguments?.getString("type")
+        RegistrationSectionScreen(
+            id = id,
+            type = type,
+            navigationUp = navigationUp,
+            settingViewModel = settingViewModel
+        )
+    }
+
 }
 
-private fun NavGraphBuilder.addHomeGraph() {
-    composable(HomeSections.HISTORY.route) {
-        HistoryScreen()
+private fun NavGraphBuilder.addHomeGraph(
+    historyViewModel: HistoryViewModel,
+    calendarViewModel: CalendarViewModel,
+    settingViewModel: SettingViewModel,
+    snackbarHostState: SnackbarHostState,
+    onClicked: (Int) -> Unit,
+    onSectionItemClicked: (Int?, String) -> Unit,
+    onClickedDetail: (Int?) -> Unit
+) {
+    composable(History.route) {
+        HistoryScreen(
+            historyViewModel,
+            calendarViewModel,
+            onClicked = { id, history ->
+                onClicked(id)
+                historyViewModel.currentHistory = history
+            }
+        )
     }
-    composable(HomeSections.CALENDAR.route) {
-        CalendarScreen()
+    composable(Calendar.route) {
+        CalendarScreen(historyViewModel, calendarViewModel)
     }
-    composable(HomeSections.STATISTICS.route) {
-        StatisticsScreen()
+    composable(Statistics.route) {
+        StatisticsScreen(calendarViewModel, onClickedDetail = { onClickedDetail(it) })
     }
-    composable(HomeSections.SETTING.route) {
-        SettingScreen()
+    composable(Setting.route) {
+        SettingScreen(
+            settingViewModel,
+            snackbarHostState,
+            onSectionItemClicked = { id, type -> onSectionItemClicked(id, type) }
+        )
     }
 }

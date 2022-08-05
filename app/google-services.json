@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "604815013839",
+    "project_id": "tech-camp-account-book",
+    "storage_bucket": "tech-camp-account-book.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:604815013839:android:c905c518566992f49ac4ba",
+        "android_client_info": {
+          "package_name": "com.woowa.accountbook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "604815013839-leeoql5i9epfim4kukufq1tgiqfht3hj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.woowa.accountbook",
+            "certificate_hash": "d8fcc489078d97d9bf591ed5e21de1a9a9bee5f1"
+          }
+        },
+        {
+          "client_id": "604815013839-pr6jbls9khpol94kom3lec8al05sshv5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArNnTy3ADoAEz7H_8D5LL-wouh1_rbDsg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "604815013839-pr6jbls9khpol94kom3lec8al05sshv5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
